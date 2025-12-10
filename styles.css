@@ -65,6 +65,7 @@ input:focus, select:focus {
 .btn-danger  { background: #e74c3c; color: #fff; }
 .btn-success { background: #27ae60; color: #fff; }
 .btn-warning { background: #f39c12; color: #fff; }
+.btn-delete {  background: #e74c3c; color: white;}
 .btn-disabled {
     background: #999;
     color: #fff;
@@ -200,3 +201,23 @@ body {
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+table th, table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  font-size: 14px;
+}
+
+table th {
+  background: #f0f0f0;
+}
+
+.status-returned { color: green; font-weight: bold; }
+.status-borrowed { color: orange; font-weight: bold; }
+.status-overdue { color: red; font-weight: bold; }

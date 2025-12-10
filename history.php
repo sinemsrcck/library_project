@@ -41,7 +41,7 @@ if (!$result) die("Query failed: " . $conn->error);
             <th>Book Title</th>
             <th>Author</th>
             <th>Borrow Date</th>
-           th>Due Date</th>
+           <th>Due Date</th>
             <th>Return Date</th>
             <th>Status</th>
         </tr>

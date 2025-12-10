@@ -1,7 +1,9 @@
 <?php
 require_once 'login.php';
 $conn = new mysqli($hn, $un, $pw, $db);
-
+if ($conn->connect_error) die("Bağlantı hatası: " . $conn->connect_error);
+?>
+<?php
 /// --- Borrow Request Onay İşlemi ---
 if (isset($_POST['approve_id'])) {
     $id = (int)$_POST['approve_id'];
@@ -42,8 +44,6 @@ if (isset($_POST['reject_id'])) {
     }
 }
 
-
-if ($conn->connect_error) die("Bağlantı hatası: " . $conn->connect_error);
 
 // --- Kitap Ekleme İşlemi ---
 if (isset($_POST['add_book'])) {
@@ -105,13 +105,6 @@ if (isset($_POST['delete_id'])) {
 }
 ?>
 
-
-<?php
-require_once 'login.php';
-$conn = new mysqli($hn, $un, $pw, $db);
-if ($conn->connect_error) die("Bağlantı hatası: " . $conn->connect_error);
-?>
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -156,11 +149,6 @@ if ($conn->connect_error) die("Bağlantı hatası: " . $conn->connect_error);
         <h3>Onaylanmış Ödünçler (İade Bekleyenler)</h3>
         <!-- Buradaki tablo kısmı aynen -->
     </div>
-
-</div>
-</body>
-
-</html>
 <!-- Bölüm 2: Kitap Listesi -->
 <div class="section">
     <h3>Mevcut Kitaplar</h3>
@@ -194,7 +182,8 @@ if ($conn->connect_error) die("Bağlantı hatası: " . $conn->connect_error);
             echo "<td>
                     <form action='admin.php' method='post'>
                         <input type='hidden' name='delete_id' value='{$row['id']}'>
-                        <button class='btn-delete' type='submit'>Sil</button>
+                       <button class='btn btn-delete' type='submit'>Sil</button>
+
                     </form>
                   </td>";
             echo "</tr>";
@@ -205,6 +194,7 @@ if ($conn->connect_error) die("Bağlantı hatası: " . $conn->connect_error);
         echo "<p>Henüz kitap eklenmemiş.</p>";
     }
     ?>
+    </div>
 <!-- Bölüm 3: Ödünç Alma İstekleri -->
 <div class="section">
     <h3>Bekleyen Ödünç Alma İstekleri</h3>
@@ -315,4 +305,7 @@ if ($conn->connect_error) die("Bağlantı hatası: " . $conn->connect_error);
     if ($resApproved) $resApproved->close();
     ?>
 </div>
+</div>
+</body>
+</html>
 
