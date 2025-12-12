@@ -103,6 +103,69 @@ if (isset($_POST['delete_id'])) {
         echo "<p style='color:red;'>Silme hatası: " . $conn->error . "</p>";
     }
 }
+//EMAIL NOTIFICATION
+// !!!BAK Due Date Reminder Emails ---
+if (isset($_POST['send_reminders'])) {
+
+    // Next 2 days (including today)
+    $q = "
+        SELECT br.id AS borrowing_id, br.due_date,
+               u.email, u.name,
+               b.title
+        FROM borrowings br
+        JOIN users u ON br.user_id = u.id
+        JOIN books b ON br.book_id = b.id
+        WHERE br.status = 'approved'
+          AND br.reminder_sent = 0
+          AND br.due_date <= DATE_ADD(CURDATE(), INTERVAL 2 DAY)
+        ORDER BY br.due_date ASC
+    ";
+
+    $res = $conn->query($q);
+
+    $sentCount = 0;
+    $failCount = 0;
+
+    if ($res) {
+        while ($row = $res->fetch_assoc()) {
+
+            $to = $row['email'];
+            $name = $row['name'];
+            $title = $row['title'];
+            $due  = $row['due_date'];
+
+            $subject = "Library Reminder: Due date is approaching";
+            $body =
+                "Hello $name,\n\n" .
+                "This is a reminder that your borrowed book is due soon:\n" .
+                "Book: $title\n" .
+                "Due Date: $due\n\n" .
+                "Please return/renew the book on time.\n\n" .
+                "Digital Library System";
+
+            // Basic headers (simple)
+            $headers = "From: library@localhost\r\n";
+            $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
+
+            $ok = mail($to, $subject, $body, $headers);
+
+            if ($ok) {
+                $id = (int)$row['borrowing_id'];
+                $conn->query("UPDATE borrowings SET reminder_sent = 1, reminder_sent_at = NOW() WHERE id = $id");
+                $sentCount++;
+            } else {
+                $failCount++;
+            }
+        }
+        $res->close();
+
+        echo "<p class='msg-info'>Reminders sent: $sentCount, failed: $failCount</p>";
+    } else {
+        echo "<p class='msg-error'>Reminder query failed: " . $conn->error . "</p>";
+    }
+    //BAK
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -306,6 +369,16 @@ if (isset($_POST['delete_id'])) {
     ?>
 </div>
 </div>
+<!--EMAIL NOTIFICATION-->
+<div class="card">
+  <h3>Notifications</h3>
+  <form method="post" action="admin.php">
+    <button type="submit" name="send_reminders" class="btn btn-warning">
+      Send Due Date Reminders (Next 2 Days)
+    </button>
+  </form>
+</div>
+<!--BAK-->
 </body>
 </html>
 
