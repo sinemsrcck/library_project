@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once "config.php";
+require_once "db.php";
 
 $errorMessage = "";
 
@@ -14,7 +14,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     } else {
 
         // Veritabanı bağlantısı
-        $conn = new mysqli($hn, $un, $pw, $db);
+        $conn = db();
 
         if ($conn->connect_error) {
             die("Database connection failed");

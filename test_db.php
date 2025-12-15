@@ -1,21 +1,11 @@
 <?php
-require_once 'login.php';
+require_once "db.php";
 
-$conn = new mysqli($hn, $un, $pw, $db);
-
-if ($conn->connect_error) {
-    die("Bağlantı hatası: " . $conn->connect_error);
-}
-
+$conn = db();
 echo "MySQL bağlantısı başarılı!<br><br>";
 
-// Test için tabloları listeleyelim
-$query = "SHOW TABLES";
-$result = $conn->query($query);
-
-if (!$result) {
-    die("Sorgu hatası: " . $conn->error);
-}
+$result = $conn->query("SHOW TABLES");
+if (!$result) die("Sorgu hatası: " . $conn->error);
 
 echo "Veritabanındaki tablolar:<br>";
 while ($row = $result->fetch_array()) {
@@ -24,4 +14,3 @@ while ($row = $result->fetch_array()) {
 
 $result->close();
 $conn->close();
-?>
