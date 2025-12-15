@@ -19,7 +19,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $errorMessage = "Passwords do not match!";
     } else {
 
-        $conn = new mysqli("localhost", "root", "", "library_db");
+        $conn = db();
+
 
         if ($conn->connect_error) {
             die("Connection failed");

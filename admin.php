@@ -197,21 +197,48 @@ if (isset($_POST['send_reminders'])) {
 
     <!-- Kart 2: Mevcut Kitaplar -->
     <div class="card">
-        <h3>Mevcut Kitaplar</h3>
-        <!-- Burada senin PHP ile tablo oluşturduğun kısım aynen kalsın -->
-    </div>
+  <h3>Mevcut Kitaplar</h3>
 
-    <!-- Kart 3: Bekleyen Ödünç İstekleri -->
-    <div class="card">
-        <h3>Bekleyen Ödünç Alma İstekleri</h3>
-        <!-- Buradaki tablo kısmı aynen -->
-    </div>
+  <?php
+  $result = $conn->query("SELECT * FROM books");
 
-    <!-- Kart 4: Onaylanmış / İade Bekleyenler -->
-    <div class="card">
-        <h3>Onaylanmış Ödünçler (İade Bekleyenler)</h3>
-        <!-- Buradaki tablo kısmı aynen -->
-    </div>
+  if ($result && $result->num_rows > 0) {
+      echo "<table>
+              <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Category</th>
+                <th>Year</th>
+                <th>Action</th>
+              </tr>";
+
+      while ($row = $result->fetch_assoc()) {
+          echo "<tr>
+                  <td>{$row['id']}</td>
+                  <td>{$row['title']}</td>
+                  <td>{$row['author']}</td>
+                  <td>{$row['category']}</td>
+                  <td>{$row['year']}</td>
+                  <td>
+                   <a href='book_detail.php?id={$row['id']}' class='btn btn-primary'>
+                    Details
+                     </a>
+                    <form method='post'>
+                      <input type='hidden' name='delete_id' value='{$row['id']}'>
+                      <button class='btn btn-danger'>Sil</button>
+                    </form>
+                  </td>
+                </tr>";
+      }
+
+      echo "</table>";
+  } else {
+      echo "<p>Henüz kitap yok.</p>";
+  }
+  ?>
+</div>
+
 <!-- Bölüm 2: Kitap Listesi -->
 <div class="section">
     <h3>Mevcut Kitaplar</h3>
