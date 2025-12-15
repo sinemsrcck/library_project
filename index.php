@@ -1,3 +1,8 @@
+<?php
+// İleride buraya DB bağlantısı ve arama logic'i eklenecek
+// include "test_db.php";
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,4 +27,3 @@
 <script src="search.js"></script>
 </body>
 </html>
-

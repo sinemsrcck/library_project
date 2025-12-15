@@ -1,3 +1,16 @@
+<?php
+session_start();
+
+/*
+  Buraya ileride DB bağlantısı ve kullanıcı kontrolü eklenecek:
+  include "test_db.php";
+  if (!isset($_SESSION["user_id"])) {
+      header("Location: login.php");
+      exit;
+  }
+*/
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
