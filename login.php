@@ -6,49 +6,51 @@ $errorMessage = "";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
-    $email = trim($_POST["email"]);
-    $password = $_POST["password"];
+    $email = trim($_POST["email"] ?? "");
+    $password = $_POST["password"] ?? "";
 
-    // Veritabanı bağlantısı
-    $conn = new mysqli($hn, $un, $pw, $db);
+    if ($email === "" || $password === "") {
+        $errorMessage = "Please fill in all fields.";
+    } else {
 
-    if ($conn->connect_error) {
-        die("Database connection failed");
-    }
+        $conn = new mysqli($hn, $un, $pw, $db);
 
-    // Kullanıcıyı email ile bul
-    $stmt = $conn->prepare(
-        "SELECT id, fullname, password FROM users WHERE email = ?"
-    );
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $stmt->store_result();
-
-    if ($stmt->num_rows === 1) {
-
-        $stmt->bind_result($id, $fullname, $hashedPassword);
-        $stmt->fetch();
-
-        // Şifre kontrolü
-        if (password_verify($password, $hashedPassword)) {
-
-            // Session oluştur
-            $_SESSION["user_id"] = $id;
-            $_SESSION["fullname"] = $fullname;
-            $_SESSION["email"] = $email;
-
-            header("Location: dashboard.php");
-            exit;
-
-        } else {
-            $errorMessage = "Wrong password!";
+        if ($conn->connect_error) {
+            die("Database connection failed");
         }
 
-    } else {
-        $errorMessage = "User not found!";
-    }
+        $stmt = $conn->prepare(
+            "SELECT id, fullname, password FROM users WHERE email = ?"
+        );
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $stmt->store_result();
 
-    $conn->close();
+        if ($stmt->num_rows === 1) {
+
+            $stmt->bind_result($id, $fullname, $hashedPassword);
+            $stmt->fetch();
+
+            if (password_verify($password, $hashedPassword)) {
+
+                $_SESSION["user_id"] = $id;
+                $_SESSION["fullname"] = $fullname;
+                $_SESSION["email"] = $email;
+
+                header("Location: dashboard.php");
+                exit;
+
+            } else {
+                $errorMessage = "Incorrect password.";
+            }
+
+        } else {
+            $errorMessage = "User not found.";
+        }
+
+        $stmt->close();
+        $conn->close();
+    }
 }
 ?>
 
@@ -63,7 +65,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <body class="auth-page">
 
 <div class="container">
-    <form class="form-box" method="POST" action="">
+    <form class="form-box" method="POST">
         <h2>Login</h2>
 
         <label>Email</label>
@@ -75,7 +77,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <button type="submit">Login</button>
 
         <?php if ($errorMessage): ?>
-            <p style="color:red;"><?php echo $errorMessage; ?></p>
+            <p style="color:red; margin-top:10px;">
+                <?php echo htmlspecialchars($errorMessage); ?>
+            </p>
         <?php endif; ?>
 
         <p class="small-text">

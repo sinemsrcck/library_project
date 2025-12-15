@@ -1,3 +1,29 @@
 <?php
-echo "Library Project Çalışıyor!";
+// İleride buraya DB bağlantısı ve arama logic'i eklenecek
+// include "test_db.php";
 ?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Library Search</title>
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+
+<h2>Library Search</h2>
+
+<input type="text" id="searchInput" placeholder="Search by book name...">
+
+<select id="categorySelect">
+  <option value="all">All</option>
+  <option value="novel">Novel</option>
+  <option value="science">Science</option>
+</select>
+
+<div id="bookList"></div>
+
+<script src="search.js"></script>
+</body>
+</html>
