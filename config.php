@@ -4,10 +4,4 @@ $un = "root";
 $pw = "";
 $db = "library_db";
 $port = 3307;       // XAMPP MySQL portu (çok önemli!)
-
-$conn = new mysqli($hn, $un, $pw, $db, $port);
-
-if ($conn->connect_error) {
-    die("DB connection failed: " . $conn->connect_error);
-}
 ?>
