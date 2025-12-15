@@ -15,7 +15,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $errorMessage = "Please fill in all fields.";
     } else {
 
-        $conn = new mysqli($hn, $un, $pw, $db);
+        $conn = db();
+
 
         if ($conn->connect_error) {
             die("Database connection failed");
