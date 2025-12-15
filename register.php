@@ -1,4 +1,8 @@
 <?php
+session_start();
+require_once "db.php";
+$conn = db();
+
 // ----------------------------
 // REGISTER PHP LOGIC
 // ----------------------------

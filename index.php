@@ -1,6 +1,7 @@
 <?php
-// İleride buraya DB bağlantısı ve arama logic'i eklenecek
-// include "test_db.php";
+session_start();
+require_once "db.php";
+$conn = db();
 ?>
 
 <!DOCTYPE html>
