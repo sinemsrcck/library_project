@@ -1,13 +1,15 @@
 <?php
 session_start();
-require_once 'login.php';
-
-// Veritabanına bağlan
-$conn = new mysqli($hn, $un, $pw, $db);
-if ($conn->connect_error) die("Connection failed: " . $conn->connect_error);
+require_once "db.php";
+$conn = db();
 
 // Şimdilik test için user_id = 1
-$user_id = 1;
+$user_id = $_SESSION["user_id"] ?? 0;
+if ($user_id === 0) {
+   header("Location: login.php");
+   exit;
+}
+
 
 // Borrowing kayıtlarını çek
 $query = "

@@ -1,7 +1,7 @@
 <?php
-require_once 'login.php';
-$conn = new mysqli($hn, $un, $pw, $db);
-if ($conn->connect_error) die("Bağlantı hatası: " . $conn->connect_error);
+session_start();
+require_once "db.php";
+$conn = db();
 ?>
 <?php
 /// --- Borrow Request Onay İşlemi ---
@@ -197,21 +197,49 @@ if (isset($_POST['send_reminders'])) {
 
     <!-- Kart 2: Mevcut Kitaplar -->
     <div class="card">
-        <h3>Mevcut Kitaplar</h3>
-        <!-- Burada senin PHP ile tablo oluşturduğun kısım aynen kalsın -->
-    </div>
+  <h3>Mevcut Kitaplar</h3>
 
-    <!-- Kart 3: Bekleyen Ödünç İstekleri -->
-    <div class="card">
-        <h3>Bekleyen Ödünç Alma İstekleri</h3>
-        <!-- Buradaki tablo kısmı aynen -->
-    </div>
+  <?php
+  $result = $conn->query("SELECT * FROM books");
 
-    <!-- Kart 4: Onaylanmış / İade Bekleyenler -->
-    <div class="card">
-        <h3>Onaylanmış Ödünçler (İade Bekleyenler)</h3>
-        <!-- Buradaki tablo kısmı aynen -->
-    </div>
+  if ($result && $result->num_rows > 0) {
+      echo "<table>
+              <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Category</th>
+                <th>Year</th>
+                <th>Action</th>
+              </tr>";
+
+      while ($row = $result->fetch_assoc()) {
+           $id = (int)$row['id'];
+          echo "<tr>
+                  <td>{$id}</td>
+                  <td>" . htmlspecialchars($row['title']) . "</td>
+                  <td>" . htmlspecialchars($row['author']) . "</td>
+                  <td>" . htmlspecialchars($row['category']) . "</td>
+                  <td>" . htmlspecialchars($row['year']) . "</td>
+                  <td style='display:flex; gap:8px; align-items:center;'>
+                    
+                    <a href='book_detail.php?id={$id}' class='btn btn-primary'>Details</a>
+
+                    <form method='post' action='admin.php' style='margin:0;'>
+                      <input type='hidden' name='delete_id' value='{$id}'>
+                      <button type='submit' class='btn btn-danger'>Sil</button>
+                    </form>
+                  </td>
+                </tr>";
+      }
+
+      echo "</table>";
+  } else {
+      echo "<p>Henüz kitap yok.</p>";
+  }
+  ?>
+</div>
+
 <!-- Bölüm 2: Kitap Listesi -->
 <div class="section">
     <h3>Mevcut Kitaplar</h3>

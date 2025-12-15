@@ -1,4 +1,8 @@
 <?php
+session_start();
+require_once "db.php";
+$conn = db();
+
 // ----------------------------
 // REGISTER PHP LOGIC
 // ----------------------------
@@ -15,7 +19,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $errorMessage = "Passwords do not match!";
     } else {
 
-        $conn = new mysqli("localhost", "root", "", "your_database_name");
+        $conn = db();
+
 
         if ($conn->connect_error) {
             die("Connection failed");

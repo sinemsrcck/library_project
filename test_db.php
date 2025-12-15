@@ -1,7 +1,8 @@
 <?php
+session_start();
 require_once "db.php";
-
 $conn = db();
+
 echo "MySQL bağlantısı başarılı!<br><br>";
 
 $result = $conn->query("SHOW TABLES");

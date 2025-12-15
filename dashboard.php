@@ -1,14 +1,15 @@
 <?php
 session_start();
+require_once "db.php";
+$conn = db();
 
-/*
-  Buraya ileride DB bağlantısı ve kullanıcı kontrolü eklenecek:
-  include "test_db.php";
-  if (!isset($_SESSION["user_id"])) {
-      header("Location: login.php");
-      exit;
-  }
-*/
+  $user_id = $_SESSION["user_id"] ?? 0;
+   if ($user_id === 0) {
+   header("Location: login.php");
+   exit;
+}
+
+
 ?>
 
 <!DOCTYPE html>

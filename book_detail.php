@@ -1,18 +1,20 @@
 <?php
 session_start();
-require_once "config.php";
+require_once "db.php";
+$conn = db();
 
-// DB connection
-$conn = new mysqli($hn, $un, $pw, $db);
-if ($conn->connect_error) {
-    die("Connection error: " . $conn->connect_error);
-}
+
 
 // Book ID
 $book_id = isset($_GET["id"]) ? (int)$_GET["id"] : 0;
 
 // Şimdilik sabit kullanıcı
-$user_id = 1;
+$user_id = $_SESSION["user_id"] ?? 0;
+if ($user_id === 0) {
+   header("Location: login.php");
+   exit;
+}
+
 
 $message = "";
 
