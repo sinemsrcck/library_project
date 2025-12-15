@@ -1,9 +1,21 @@
+
 <?php
+require_once "config.php";
+
+function db() {
+    global $hn, $un, $pw, $db;
+    $conn = new mysqli($hn, $un, $pw, $db);
+    if ($conn->connect_error) die("Database connection failed: " . $conn->connect_error);
+    $conn->set_charset("utf8mb4");
+    return $conn;
+}
 session_start();
-require_once 'login.php';
+
 
 // Connect databases
-$conn = new mysqli($hn, $un, $pw, $db);
+require_once "db.php";
+$conn = db();
+
 if ($conn->connect_error) die("Connection error: " . $conn->connect_error);
 
 // Get the book id from URL 
