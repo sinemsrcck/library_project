@@ -61,7 +61,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <title>Register</title>
   <link rel="stylesheet" href="register.css">
 </head>
-<body>
+<body class="auth-page">
 
 <div class="register-box">
   <h2>Create Account</h2>
