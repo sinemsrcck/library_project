@@ -214,19 +214,20 @@ if (isset($_POST['send_reminders'])) {
               </tr>";
 
       while ($row = $result->fetch_assoc()) {
+           $id = (int)$row['id'];
           echo "<tr>
-                  <td>{$row['id']}</td>
-                  <td>{$row['title']}</td>
-                  <td>{$row['author']}</td>
-                  <td>{$row['category']}</td>
-                  <td>{$row['year']}</td>
-                  <td>
-                   <a href='book_detail.php?id={$row['id']}' class='btn btn-primary'>
-                    Details
-                     </a>
-                    <form method='post'>
-                      <input type='hidden' name='delete_id' value='{$row['id']}'>
-                      <button class='btn btn-danger'>Sil</button>
+                  <td>{$id}</td>
+                  <td>" . htmlspecialchars($row['title']) . "</td>
+                  <td>" . htmlspecialchars($row['author']) . "</td>
+                  <td>" . htmlspecialchars($row['category']) . "</td>
+                  <td>" . htmlspecialchars($row['year']) . "</td>
+                  <td style='display:flex; gap:8px; align-items:center;'>
+                    
+                    <a href='book_detail.php?id={$id}' class='btn btn-primary'>Details</a>
+
+                    <form method='post' action='admin.php' style='margin:0;'>
+                      <input type='hidden' name='delete_id' value='{$id}'>
+                      <button type='submit' class='btn btn-danger'>Sil</button>
                     </form>
                   </td>
                 </tr>";
