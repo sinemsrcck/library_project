@@ -1,41 +1,33 @@
-
 <?php
+session_start();
 require_once "config.php";
 
-function db() {
-    global $hn, $un, $pw, $db;
-    $conn = new mysqli($hn, $un, $pw, $db);
-    if ($conn->connect_error) die("Database connection failed: " . $conn->connect_error);
-    $conn->set_charset("utf8mb4");
-    return $conn;
+// DB connection
+$conn = new mysqli($hn, $un, $pw, $db);
+if ($conn->connect_error) {
+    die("Connection error: " . $conn->connect_error);
 }
-session_start();
 
+// Book ID
+$book_id = isset($_GET["id"]) ? (int)$_GET["id"] : 0;
 
-// Connect databases
-require_once "db.php";
-$conn = db();
-
-if ($conn->connect_error) die("Connection error: " . $conn->connect_error);
-
-// Get the book id from URL 
-$book_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-$user_id = 1; // fixed user for now (no Login)
+// Şimdilik sabit kullanıcı
+$user_id = 1;
 
 $message = "";
 
-// Get the book informations from database
+// Get book
 $query = "SELECT * FROM books WHERE id = $book_id";
 $result = $conn->query($query);
 $book = $result ? $result->fetch_assoc() : null;
 
-// Check if there is already a pending request for this user and book
+// Check pending request
 $hasPending = false;
-
 if ($book) {
-    $user_id = 1; // şimdilik sabit kullanıcı
     $checkQ = "SELECT id FROM borrowings 
-               WHERE user_id = $user_id AND book_id = $book_id AND status = 'pending'
+               WHERE user_id = $user_id 
+               AND book_id = $book_id 
+               AND status = 'pending'
                LIMIT 1";
     $checkR = $conn->query($checkQ);
     if ($checkR && $checkR->num_rows > 0) {
@@ -44,100 +36,106 @@ if ($book) {
     if ($checkR) $checkR->close();
 }
 
-// ----If borrow button clicked ----
-if ($book && isset($_POST['borrow'])) {
-    
-   if ($book['is_available'] != 1) {
-        $message = "<p style='color:red;'>This book is not available.</p>";
+// Borrow action (PRG pattern)
+if ($book && isset($_POST["borrow"])) {
+
+    if ($book["is_available"] != 1) {
+        $message = "<p class='error'>This book is not available.</p>";
     } elseif ($hasPending) {
-        $message = "<p style='color:orange;'>You already have a pending request for this book.</p>";
+        $message = "<p class='warning'>You already have a pending request for this book.</p>";
     } else {
+
         $borrow_date = date("Y-m-d");
-        $due_date    = date("Y-m-d", strtotime("+10 days"));
+        $due_date = date("Y-m-d", strtotime("+10 days"));
 
         $ins = "INSERT INTO borrowings (user_id, book_id, borrow_date, due_date, status)
                 VALUES ($user_id, $book_id, '$borrow_date', '$due_date', 'pending')";
-    
-//burası değişti,prevent duplicate borrow requests
-        if ($conn->query($ins)) {
-             
-                $_SESSION['msg'] = "<p style='color:green;'>Request sent! It will be active after admin approval.</p>";
-                header("Location: book_detail.php?id=$book_id");
-                exit;
-            
 
-    } else {
-        $message = "<p style='color:red;'>Hata: " . $conn->error . "</p>";
+        if ($conn->query($ins)) {
+            $_SESSION["msg"] = "<p class='success'>
+                Request sent! It will be active after admin approval.
+            </p>";
+            header("Location: book_detail.php?id=$book_id");
+            exit;
+        } else {
+            $message = "<p class='error'>Error: {$conn->error}</p>";
+        }
     }
-}
 }
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <link rel="stylesheet" href="styles.css">
-    <meta charset="UTF-8">
-    <title><?php echo $book ? htmlspecialchars($book['title']) : 'Kitap Bulunamadı'; ?></title>
-
+  <meta charset="UTF-8">
+  <title>
+    <?php echo $book ? htmlspecialchars($book["title"]) : "Book Not Found"; ?>
+  </title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+
 <div class="container">
-<!--“The Post/Redirect/Get pattern is used after form submission to prevent duplicate borrow requests caused by page refresh.”-->
-<?php
-if (isset($_SESSION['msg'])) {
-    echo $_SESSION['msg'];
-    unset($_SESSION['msg']);
-}
-?>
 
 <?php
-// If there is message after borrowing, it will be visible here
+// Session message (PRG)
+if (isset($_SESSION["msg"])) {
+    echo $_SESSION["msg"];
+    unset($_SESSION["msg"]);
+}
+
+// Inline message
 echo $message;
 ?>
 
 <?php if ($book): ?>
-    <div class="card">
-        <h2><?php echo htmlspecialchars($book['title']); ?></h2>
+<div class="book-detail">
 
-    <p><strong>Yazar:</strong> <?php echo htmlspecialchars($book['author']); ?></p>
-    <p><strong>Kategori:</strong> <?php echo htmlspecialchars($book['category']); ?></p>
-    <p><strong>Yıl:</strong> <?php echo htmlspecialchars($book['year']); ?></p>
-    <p><strong>ISBN:</strong> <?php echo htmlspecialchars($book['isbn']); ?></p>
-    
-    <!-- If is available equal 1, the borrow button is active else not -->
-    <?php if ($book['is_available'] == 1): ?>
-        <p style="color: green;">Kitap müsait</p>
+  <!-- STATIK HTML TASARIM + DINAMIK DATA -->
+  <img src="book.jpg" alt="Book Cover">
 
-       <?php if ($hasPending): ?>
-        <p style="color: orange;">Bu kitap için zaten bekleyen bir isteğin var.</p>
-        <button class="btn btn-disabled" disabled>Borrow</button>
-   
-        <?php else: ?>
-        <form method="post" id="borrowForm">
-            <button type="submit" name="borrow" class="btn btn-borrow">
-                Borrow (Ödünç Al)
-            </button>
-        </form>
-    <?php endif; ?>
+  <h2><?php echo htmlspecialchars($book["title"]); ?></h2>
 
-    <?php else: ?>
-        <p style="color: red;">Bu kitap şu anda uygun değil.</p>
-        <button class="btn btn-disabled" disabled>Borrow</button>
-    <?php endif; ?>
+  <p><strong>Author:</strong> <?php echo htmlspecialchars($book["author"]); ?></p>
+  <p><strong>Category:</strong> <?php echo htmlspecialchars($book["category"]); ?></p>
+  <p><strong>Year:</strong> <?php echo htmlspecialchars($book["year"]); ?></p>
+  <p><strong>ISBN:</strong> <?php echo htmlspecialchars($book["isbn"]); ?></p>
+
+  <?php if ($book["is_available"] == 1): ?>
+      <p class="available">Status: Available</p>
+
+      <?php if ($hasPending): ?>
+          <p class="warning">You already requested this book.</p>
+          <button class="btn btn-disabled" disabled>Borrow</button>
+      <?php else: ?>
+          <form method="post" id="borrowForm">
+              <button type="submit" name="borrow" class="btn btn-borrow">
+                  Borrow
+              </button>
+          </form>
+      <?php endif; ?>
+
+  <?php else: ?>
+      <p class="error">Status: Not Available</p>
+      <button class="btn btn-disabled" disabled>Borrow</button>
+  <?php endif; ?>
+
 </div>
 <?php else: ?>
-    <p>Kitap bulunamadı.</p>
+<p>Book not found.</p>
 <?php endif; ?>
+
 </div>
+
 <script>
-  const form = document.getElementById("borrowForm");
-  if (form) {
-    form.addEventListener("submit", function(e) {
-      const ok = confirm("Send borrow request for this book?");
-      if (!ok) e.preventDefault();
-    });
-  }
+const form = document.getElementById("borrowForm");
+if (form) {
+  form.addEventListener("submit", function(e) {
+    if (!confirm("Send borrow request for this book?")) {
+        e.preventDefault();
+    }
+  });
+}
 </script>
 
 </body>
@@ -147,3 +145,4 @@ echo $message;
 if ($result) $result->close();
 $conn->close();
 ?>
+

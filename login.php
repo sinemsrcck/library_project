@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once "db.php";
+require_once "config.php";
 
 $errorMessage = "";
 
@@ -13,14 +13,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $errorMessage = "Please fill in all fields.";
     } else {
 
-        // Veritabanı bağlantısı
-        $conn = db();
+        $conn = new mysqli($hn, $un, $pw, $db);
 
         if ($conn->connect_error) {
             die("Database connection failed");
         }
 
-        // Kullanıcıyı email ile bul
         $stmt = $conn->prepare(
             "SELECT id, fullname, password FROM users WHERE email = ?"
         );
@@ -33,10 +31,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $stmt->bind_result($id, $fullname, $hashedPassword);
             $stmt->fetch();
 
-            // Şifre doğrulama
             if (password_verify($password, $hashedPassword)) {
 
-                // Session oluştur
                 $_SESSION["user_id"] = $id;
                 $_SESSION["fullname"] = $fullname;
                 $_SESSION["email"] = $email;
@@ -69,7 +65,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <body class="auth-page">
 
 <div class="container">
-    <form class="form-box" method="POST" action="">
+    <form class="form-box" method="POST">
         <h2>Login</h2>
 
         <label>Email</label>

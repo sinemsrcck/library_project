@@ -1,31 +1,27 @@
 <?php
-// Hata mesajı için değişken
+// ----------------------------
+// REGISTER PHP LOGIC
+// ----------------------------
 $errorMessage = "";
 
-// Form gönderildiyse
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
-    $fullname = trim($_POST["fullname"]);
-    $email = trim($_POST["email"]);
-    $password = $_POST["password"];
-    $confirmPassword = $_POST["confirmPassword"];
+    $fullname = trim($_POST["fullname"] ?? "");
+    $email = trim($_POST["email"] ?? "");
+    $password = $_POST["password"] ?? "";
+    $confirmPassword = $_POST["confirmPassword"] ?? "";
 
-    // Şifreler eşleşiyor mu?
     if ($password !== $confirmPassword) {
         $errorMessage = "Passwords do not match!";
     } else {
 
-        // Veritabanı bağlantısı
         $conn = new mysqli("localhost", "root", "", "your_database_name");
 
         if ($conn->connect_error) {
-            die("Connection failed: " . $conn->connect_error);
+            die("Connection failed");
         }
 
-        // Şifreyi hashle
-        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-
-        // Email daha önce var mı?
+        // Email kontrol
         $check = $conn->prepare("SELECT id FROM users WHERE email = ?");
         $check->bind_param("s", $email);
         $check->execute();
@@ -35,15 +31,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $errorMessage = "This email is already registered.";
         } else {
 
-            // Kullanıcıyı ekle
+            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
             $stmt = $conn->prepare(
                 "INSERT INTO users (fullname, email, password) VALUES (?, ?, ?)"
             );
             $stmt->bind_param("sss", $fullname, $email, $hashedPassword);
 
             if ($stmt->execute()) {
-                header("Location: login.php"); // kayıt başarılı
-                exit();
+                header("Location: login.php");
+                exit;
             } else {
                 $errorMessage = "Registration failed!";
             }
@@ -59,27 +56,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
   <meta charset="UTF-8">
   <title>Register</title>
-  <link rel="stylesheet" href="register.css">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
 <div class="register-box">
   <h2>Create Account</h2>
 
-  <form method="POST" action="">
-    <input type="text" name="fullname" placeholder="Full Name" required>
-    <input type="email" name="email" placeholder="Email" required>
-    <input type="password" name="password" placeholder="Password" required>
-    <input type="password" name="confirmPassword" placeholder="Confirm Password" required>
+  <form id="registerForm" method="POST" action="">
+    <input type="text" name="fullname" id="fullname" placeholder="Full Name" required>
+    <input type="email" name="email" id="email" placeholder="Email" required>
+    <input type="password" name="password" id="password" placeholder="Password" required>
+    <input type="password" name="confirmPassword" id="confirmPassword" placeholder="Confirm Password" required>
 
     <button type="submit">Register</button>
 
-    <?php if ($errorMessage): ?>
-      <p id="errorMessage"><?php echo $errorMessage; ?></p>
-    <?php endif; ?>
+    <p id="errorMessage">
+      <?php if ($errorMessage) echo htmlspecialchars($errorMessage); ?>
+    </p>
   </form>
 </div>
 
+<!-- JS AYRI DOSYA, AYNI KALIYOR -->
+<script src="register.js"></script>
+
 </body>
 </html>
-
