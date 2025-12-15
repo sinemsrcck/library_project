@@ -1,40 +1,60 @@
 <?php
-// ====== DATABASE CONNECTION ======
-$$hn = "127.0.0.1";   // veya "localhost" (ikisinden biri)
-$un = "root";        // MySQL'e Workbench ile bağlanırken kullandığın kullanıcı adı
-$pw = "1395";        // MySQL şifren (varsa buraya yaz, yoksa boş bırak)
-$db = "library_db";  // az önce tabloları oluşturduğun veritabanı
-
-$conn = new mysqli($hn, $un, $pw, $db);
-if ($conn->connect_error) {
-    die("Database connection failed");
-}
-
-// ====== LOGIN LOGIC ======
 session_start();
-$error = "";
+require_once "config.php";
+
+$errorMessage = "";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $email = $_POST["email"];
-    $password = $_POST["password"];
 
-    $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    $email = trim($_POST["email"] ?? "");
+    $password = $_POST["password"] ?? "";
 
-    if ($result->num_rows === 1) {
-        $user = $result->fetch_assoc();
+    if ($email === "" || $password === "") {
+        $errorMessage = "Please fill in all fields.";
+    } else {
 
-        if (password_verify($password, $user["password"])) {
-            $_SESSION["user_id"] = $user["id"];
-            $_SESSION["role"] = $user["role"];
-            header("Location: dashboard.php");
-            exit;
+        // Veritabanı bağlantısı
+        $conn = new mysqli($hn, $un, $pw, $db);
+
+        if ($conn->connect_error) {
+            die("Database connection failed");
         }
-    }
 
-    $error = "Invalid email or password";
+        // Kullanıcıyı email ile bul
+        $stmt = $conn->prepare(
+            "SELECT id, fullname, password FROM users WHERE email = ?"
+        );
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $stmt->store_result();
+
+        if ($stmt->num_rows === 1) {
+
+            $stmt->bind_result($id, $fullname, $hashedPassword);
+            $stmt->fetch();
+
+            // Şifre doğrulama
+            if (password_verify($password, $hashedPassword)) {
+
+                // Session oluştur
+                $_SESSION["user_id"] = $id;
+                $_SESSION["fullname"] = $fullname;
+                $_SESSION["email"] = $email;
+
+                header("Location: dashboard.php");
+                exit;
+
+            } else {
+                $errorMessage = "Incorrect password.";
+            }
+
+        } else {
+            $errorMessage = "User not found.";
+        }
+
+        $stmt->close();
+        $conn->close();
+    }
 }
 ?>
 
@@ -46,32 +66,32 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <title>Login - Digital Library</title>
     <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="auth-page">
 
 <div class="container">
-    <form class="form-box" id="loginForm" action="login.php" method="POST">
+    <form class="form-box" method="POST" action="">
         <h2>Login</h2>
 
-        <?php if ($error): ?>
-            <p style="color:red; text-align:center;">
-                <?= $error ?>
-            </p>
-        <?php endif; ?>
-
         <label>Email</label>
-        <input type="text" id="email" name="email" placeholder="example@mail.com" required>
+        <input type="email" name="email" placeholder="example@mail.com" required>
 
         <label>Password</label>
-        <input type="password" id="password" name="password" placeholder="Enter password" required>
+        <input type="password" name="password" placeholder="Enter password" required>
 
         <button type="submit">Login</button>
 
-        <p class="small-text">Don’t have an account?
+        <?php if ($errorMessage): ?>
+            <p style="color:red; margin-top:10px;">
+                <?php echo htmlspecialchars($errorMessage); ?>
+            </p>
+        <?php endif; ?>
+
+        <p class="small-text">
+            Don’t have an account?
             <a href="register.php">Register</a>
         </p>
     </form>
 </div>
 
-<script src="login.js"></script>
 </body>
 </html>
