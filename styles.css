@@ -1,223 +1,203 @@
-/* GENEL SAYFA STİLİ */
+/* ========== RESET & GENEL ========== */
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background: #f4f4f4;
-    color: #222;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background: #f4f4f4;
+  color: #222;
+  text-align: center;
 }
 
-/* ORTALAMA – ANA CONTAINER */
+/* ========== ANA CONTAINER ========== */
 .container {
-    max-width: 900px;
-    margin: 40px auto;
-    padding: 0 20px;
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 0 20px;
 }
 
-/* BAŞLIKLAR */
+/* ========== BAŞLIKLAR ========== */
 h1, h2, h3 {
-    font-weight: 600;
-    text-align: center;
-    margin-bottom: 20px;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 20px;
 }
 
-h2 {
-    margin-top: 10px;
-}
-
-/* KART GÖRÜNÜMÜ (BLOK KUTULAR) */
+/* ========== KARTLAR ========== */
 .card {
-    background: #fff;
-    border-radius: 8px;
-    padding: 20px 25px;
-    margin-bottom: 25px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px 25px;
+  margin-bottom: 25px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
 }
 
-/* FORMLAR */
+/* Admin / history bölümleri */
+.section {
+  margin-top: 25px;
+}
+
+/* ========== FORMLAR ========== */
 input, select {
-    padding: 7px 10px;
-    margin: 5px 8px 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+  padding: 8px 10px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100%;
 }
 
 input:focus, select:focus {
-    outline: none;
-    border-color: #4a90e2;
+  outline: none;
+  border-color: #4a90e2;
 }
 
-/* BUTONLAR GENEL */
+/* ========== BUTONLAR ========== */
 .btn {
-    padding: 8px 14px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
 }
 
-/* BUTON RENKLERİ */
 .btn-primary { background: #4a90e2; color: #fff; }
-.btn-danger  { background: #e74c3c; color: #fff; }
 .btn-success { background: #27ae60; color: #fff; }
 .btn-warning { background: #f39c12; color: #fff; }
-.btn-delete {  background: #e74c3c; color: white;}
-.btn-disabled {
-    background: #999;
-    color: #fff;
-    cursor: not-allowed;
+.btn-danger  { background: #e74c3c; color: #fff; }
+
+.btn-delete {
+  background: #e74c3c;
+  color: #fff;
 }
 
-/* TABLOLAR */
+.btn-disabled {
+  background: #999;
+  color: #fff;
+  cursor: not-allowed;
+}
+
+/* Admin onay / red */
+.btn-approve {
+  background: #27ae60;
+  color: #fff;
+}
+
+.btn-reject {
+  background: #e74c3c;
+  color: #fff;
+}
+
+/* ========== TABLOLAR ========== */
 table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
 }
 
 th, td {
-    border: 1px solid #ddd;
-    padding: 8px 10px;
-    text-align: left;
+  border: 1px solid #ddd;
+  padding: 8px 10px;
+  text-align: left;
 }
 
 th {
-    background: #f0f0f0;
-    font-weight: 600;
+  background: #f0f0f0;
+  font-weight: 600;
 }
 
-/* STATUS RENKLERİ (history.php) */
+/* ========== STATUS RENKLERİ ========== */
 .status-approved { color: #27ae60; font-weight: bold; }
 .status-pending  { color: #f39c12; font-weight: bold; }
 .status-rejected { color: #e74c3c; font-weight: bold; }
 .status-returned { color: #2980b9; font-weight: bold; }
 
-/* MESAJLAR */
+/* ========== MESAJLAR ========== */
 .msg-success { color: #27ae60; text-align: center; }
 .msg-error   { color: #e74c3c; text-align: center; }
 .msg-info    { color: #2980b9; text-align: center; }
 
-
+/* ========== SEARCH / HOME ========== */
 .search-container {
-    width: 60%;
-    margin: 40px auto;
-    display: flex;
-    gap: 10px;
+  width: 60%;
+  margin: 30px auto;
+  display: flex;
+  gap: 10px;
 }
 
 .search-container input,
 .search-container select {
-    width: 40%;
-    padding: 10px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
+  width: 40%;
 }
 
 .search-container button {
-    width: 20%;
-    background: #0077cc;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
+  width: 20%;
+  background: #0077cc;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
 }
 
 .search-container button:hover {
-    background: #005fa3;
+  background: #005fa3;
 }
 
-
-body {
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-    background: #f3f3f3;
+.book-card {
+  background: #eee;
+  margin: 10px auto;
+  padding: 10px;
+  width: 200px;
 }
 
-.container {
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+/* ========== LOGIN & REGISTER ========== */
+.form-box,
+.register-box {
+  width: 350px;
+  background: #fff;
+  margin: 80px auto;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
-.form-box {
-    width: 350px;
-    background: white;
-    padding: 25px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+.form-box h2,
+.register-box h2 {
+  margin-bottom: 20px;
 }
 
-.form-box h2 {
-    text-align: center;
-    margin-bottom: 20px;
+.form-box button,
+.register-box button {
+  width: 100%;
+  padding: 12px;
+  background: #0077cc;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
 }
 
-.form-box input {
-    width: 100%;
-    padding: 10px;
-    margin: 8px 0 15px 0;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-}
-
-.form-box button {
-    width: 100%;
-    padding: 12px;
-    background: #0077cc;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-}
-
-.form-box button:hover {
-    background: #005fa3;
+.form-box button:hover,
+.register-box button:hover {
+  background: #005fa3;
 }
 
 .small-text {
-    text-align: center;
-    font-size: 14px;
-}
-
-.card-container {
-    width: 90%;
-    margin: auto;
-    display: flex;
-    justify-content: space-between;
-    margin-top: 40px;
-}
-
-.card {
-    width: 45%;
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-}
-
-table th, table td {
-  border: 1px solid #ddd;
-  padding: 10px;
   font-size: 14px;
 }
 
-table th {
-  background: #f0f0f0;
+/* ========== BOOK DETAIL ========== */
+.book-detail {
+  width: 350px;
+  background: white;
+  margin: 80px auto;
+  padding: 20px;
+  border-radius: 10px;
 }
 
-.status-returned { color: green; font-weight: bold; }
-.status-borrowed { color: orange; font-weight: bold; }
-.status-overdue { color: red; font-weight: bold; }
+.book-detail img {
+  width: 100%;
+  border-radius: 10px;
+}
