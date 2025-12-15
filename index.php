@@ -8,7 +8,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Library Search</title>
-  <link rel="stylesheet" href="index.css">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
