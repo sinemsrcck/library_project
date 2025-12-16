@@ -17,11 +17,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         $conn = db();
 
-
-        if ($conn->connect_error) {
-            die("Database connection failed");
-        }
-
         $stmt = $conn->prepare(
             "SELECT id, fullname, password FROM users WHERE email = ?"
         );

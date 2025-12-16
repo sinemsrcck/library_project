@@ -1,4 +1,6 @@
 <?php
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+
 session_start();
 require_once "db.php";
 $conn = db();
@@ -15,3 +17,4 @@ while ($row = $result->fetch_array()) {
 
 $result->close();
 $conn->close();
+?> 

@@ -3,8 +3,6 @@ session_start();
 require_once "db.php";
 $conn = db();
 
-
-
 // Book ID
 $book_id = isset($_GET["id"]) ? (int)$_GET["id"] : 0;
 

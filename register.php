@@ -21,11 +21,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         $conn = db();
 
-
-        if ($conn->connect_error) {
-            die("Connection failed");
-        }
-
         // Email kontrol
         $check = $conn->prepare("SELECT id FROM users WHERE email = ?");
         $check->bind_param("s", $email);

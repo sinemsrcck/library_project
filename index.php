@@ -37,7 +37,7 @@ if ($res) {
 
 <div id="bookList"></div>
 
-<script src="search.js"></script>
+
 <script>
   // PHP -> JS
   const booksFromDB = <?= json_encode($books, JSON_UNESCAPED_UNICODE); ?>;
