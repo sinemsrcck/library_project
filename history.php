@@ -3,7 +3,6 @@ session_start();
 require_once "db.php";
 $conn = db();
 
-// Şimdilik test için user_id = 1
 $user_id = $_SESSION["user_id"] ?? 0;
 if ($user_id === 0) {
    header("Location: login.php");
@@ -32,12 +31,22 @@ if (!$result) die("Query failed: " . $conn->error);
     <title>Borrowing History</title>
     
 </head>
-<body>
+<body class="theme-library">
+
+    <div class="navbar">
+  <a class="btn btn-primary" href="index.php">Home</a>
+  <a class="btn btn-primary" href="dashboard.php">Dashboard</a>
+  <a class="btn btn-primary" href="history.php">History</a>
+    <?php if (!empty($_SESSION["is_admin"])): ?>
+    <a class="btn btn-primary" href="admin.php">Admin</a>
+  <?php endif; ?>
+  <a class="btn btn-danger" href="logout.php">Logout</a>
+</div>
     <div class="container">
 
     <h1>Borrowing History</h1>
 
-    <div class="card">
+    <div class="navbar">
     <table id="historyTable">
         <tr>
             <th>Book Title</th>

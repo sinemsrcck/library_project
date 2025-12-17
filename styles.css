@@ -201,3 +201,170 @@ th {
   width: 100%;
   border-radius: 10px;
 }
+/* =========================
+   LIBRARY THEME (NO OVERRIDE)
+   Activate by adding: <body class="theme-library">
+========================= */
+
+.theme-library {
+  background: #f7f3e9; /* paper */
+  color: #2b2b2b;
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+/* başlık hissi */
+.theme-library h1,
+.theme-library h2,
+.theme-library h3 {
+  font-family: Georgia, "Times New Roman", serif;
+  letter-spacing: .2px;
+}
+
+/* sadece navbar için ayrı görünüm (eski .card’a dokunmaz) */
+.theme-library .navbar {
+  background: linear-gradient(180deg, #4b2a2a, #6a3b3b);
+  border: 1px solid rgba(0,0,0,.18);
+  border-radius: 12px;
+  padding: 12px;
+  max-width: 900px;
+  margin: 18px auto 26px;
+}
+
+/* navbar içindeki butonlar (global .btn değişmez) */
+.theme-library .navbar .btn {
+  background: rgba(255,255,255,.12);
+  border: 1px solid rgba(255,255,255,.18);
+  color: #fff;
+  text-decoration: none;
+}
+.theme-library .navbar .btn:hover { opacity: .92; }
+
+/* sayfa içi “panel” sınıfı: sadece bunu verdiğin kartlar değişir */
+.theme-library .lt-panel {
+  background: #fffdf8;
+  border: 1px solid #d8cfbf;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+/* kitap kartlarına istersen kapak hissi */
+.theme-library .book-card .cover {
+  height: 160px;
+  border: 1px solid #d8cfbf;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  background: repeating-linear-gradient(
+    45deg,
+    #efe7d8,
+    #efe7d8 10px,
+    #f8f3ea 10px,
+    #f8f3ea 20px
+  );
+}
+
+/* küçük uyarı badge’i (Due in 2 days gibi) */
+.theme-library .badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 12px;
+  border: 1px solid #d8cfbf;
+  background: #fff6e6;
+}
+.theme-library .badge-warning { background:#fff1da; border-color:#f2d19a; }
+.theme-library .badge-danger  { background:#ffe9e9; border-color:#f0b3b3; }
+.theme-library .badge-ok      { background:#eafff0; border-color:#a9e3bf; }
+
+/* =========================
+   LOGIN – LIBRARY THEME
+========================= */
+
+/* Login / Register kart rengi */
+.theme-library .form-box,
+.theme-library .register-box{
+  background: #fffaf0; /* krem */
+  border: 1px solid #d8cfbf;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* User / Admin seçim butonları */
+.theme-library #userBtn,
+.theme-library #adminBtn{
+  background: #4b2a2a;   /* bordo */
+  color: #fff;
+  border: 1px solid #3a1f1f;
+}
+
+.theme-library #userBtn:hover,
+.theme-library #adminBtn:hover{
+  background: #6a3b3b;
+}
+
+/* Login submit butonu */
+.theme-library .form-box button[type="submit"]{
+  background: #4b2a2a;
+  border: none;
+  color: #fff;
+  font-weight: 600;
+}
+
+.theme-library .form-box button[type="submit"]:hover{
+  background: #6a3b3b;
+}
+
+/* Input başlıkları (Email / Password yazıları) */
+.theme-library label{
+  font-weight: 600;
+  color: #3a2a2a;
+}
+
+/* Register link rengi */
+.theme-library .small-text a{
+  color: #6a3b3b;
+  font-weight: 600;
+}
+/* ===== Fix: Home/Search layout (theme-library) ===== */
+.theme-library h2{
+  margin: 22px 0 10px;
+}
+
+/* Search input + select hizası */
+.theme-library #searchInput,
+.theme-library #categorySelect{
+  width: min(720px, 92%);
+  display: block;
+  margin: 10px auto;
+}
+
+/* dropdown biraz daha kısa olsun */
+.theme-library #categorySelect{
+  max-width: 360px;
+}
+
+/* book list grid ortalama + boşluk */
+.theme-library #bookList{
+  width: min(920px, 92%);
+  margin: 18px auto 40px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 18px;
+}
+
+/* book kartı görünümü */
+.theme-library .book-card{
+  background: #fffaf0;
+  border: 1px solid #d8cfbf;
+  border-radius: 10px;
+  padding: 18px 16px;
+  text-align: center;
+}
+
+/* Details butonu bordo olsun */
+.theme-library .book-card .btn-primary{
+  background: #4b2a2a;
+  border: 1px solid #3a1f1f;
+}
+.theme-library .book-card .btn-primary:hover{
+  background: #6a3b3b;
+}

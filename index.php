@@ -11,9 +11,21 @@ $conn = db();
   <title>Library Search</title>
   <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="theme-library">
+
 
 <h2>Library Search</h2>
+<div class="navbar">
+  <a class="btn btn-primary" href="index.php">Home</a>
+  <a class="btn btn-primary" href="dashboard.php">Dashboard</a>
+  <a class="btn btn-primary" href="history.php">History</a>
+
+  <?php if (!empty($_SESSION["is_admin"])): ?>
+    <a class="btn btn-primary" href="admin.php">Admin</a>
+  <?php endif; ?>
+
+  <a class="btn btn-danger" href="logout.php">Logout</a>
+</div>
 
 <input type="text" id="searchInput" placeholder="Search by book name...">
 

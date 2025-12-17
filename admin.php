@@ -1,7 +1,15 @@
 <?php
 session_start();
+
+if (empty($_SESSION["is_admin"])) {
+  header("Location: login.php");
+  exit;
+}
 require_once "db.php";
 $conn = db();
+
+
+
 ?>
 <?php
 /// --- Borrow Request Onay İşlemi ---
@@ -103,68 +111,7 @@ if (isset($_POST['delete_id'])) {
         echo "<p style='color:red;'>Silme hatası: " . $conn->error . "</p>";
     }
 }
-//EMAIL NOTIFICATION
-// !!!BAK Due Date Reminder Emails ---
-if (isset($_POST['send_reminders'])) {
 
-    // Next 2 days (including today)
-    $q = "
-        SELECT br.id AS borrowing_id, br.due_date,
-               u.email, u.name,
-               b.title
-        FROM borrowings br
-        JOIN users u ON br.user_id = u.id
-        JOIN books b ON br.book_id = b.id
-        WHERE br.status = 'approved'
-          AND br.reminder_sent = 0
-          AND br.due_date <= DATE_ADD(CURDATE(), INTERVAL 2 DAY)
-        ORDER BY br.due_date ASC
-    ";
-
-    $res = $conn->query($q);
-
-    $sentCount = 0;
-    $failCount = 0;
-
-    if ($res) {
-        while ($row = $res->fetch_assoc()) {
-
-            $to = $row['email'];
-            $name = $row['name'];
-            $title = $row['title'];
-            $due  = $row['due_date'];
-
-            $subject = "Library Reminder: Due date is approaching";
-            $body =
-                "Hello $name,\n\n" .
-                "This is a reminder that your borrowed book is due soon:\n" .
-                "Book: $title\n" .
-                "Due Date: $due\n\n" .
-                "Please return/renew the book on time.\n\n" .
-                "Digital Library System";
-
-            // Basic headers (simple)
-            $headers = "From: library@localhost\r\n";
-            $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
-
-            $ok = mail($to, $subject, $body, $headers);
-
-            if ($ok) {
-                $id = (int)$row['borrowing_id'];
-                $conn->query("UPDATE borrowings SET reminder_sent = 1, reminder_sent_at = NOW() WHERE id = $id");
-                $sentCount++;
-            } else {
-                $failCount++;
-            }
-        }
-        $res->close();
-
-        echo "<p class='msg-info'>Reminders sent: $sentCount, failed: $failCount</p>";
-    } else {
-        echo "<p class='msg-error'>Reminder query failed: " . $conn->error . "</p>";
-    }
-    //BAK
-}
 
 ?>
 
@@ -176,13 +123,21 @@ if (isset($_POST['send_reminders'])) {
     <title>Admin Panel</title>
 </head>
 
-<body>
+<body class="theme-library">
+
+   <div class="navbar">
+  <a class="btn btn-primary" href="index.php">Home</a>
+  <a class="btn btn-primary" href="dashboard.php">Dashboard</a>
+  <a class="btn btn-primary" href="history.php">History</a>
+  <a class="btn btn-danger" href="logout.php">Logout</a>
+</div>
+
 <div class="container">
 
     <h1>Admin Panel</h1>
 
     <!-- Kart 1: Kitap Ekle -->
-    <div class="card">
+    <div class="navbar">
         <h3>Kitap Ekle</h3>
 
         <form action="admin.php" method="post">
@@ -195,7 +150,7 @@ if (isset($_POST['send_reminders'])) {
         </form>
     </div>
 
-    <!-- Kart 2: Mevcut Kitaplar -->
+    <!-- Bölüm 2: Mevcut Kitaplar -->
     <div class="card">
   <h3>Mevcut Kitaplar</h3>
 
@@ -240,52 +195,7 @@ if (isset($_POST['send_reminders'])) {
   ?>
 </div>
 
-<!-- Bölüm 2: Kitap Listesi -->
-<div class="section">
-    <h3>Mevcut Kitaplar</h3>
 
-    <?php
-    // Tüm kitapları çek
-    $query = "SELECT * FROM books";
-    $result = $conn->query($query);
-
-    if ($result->num_rows > 0) {
-        echo "<table>";
-        echo "<tr>
-                <th>ID</th>
-                <th>Title</th>
-                <th>Author</th>
-                <th>Category</th>
-                <th>Year</th>
-                <th>ISBN</th>
-                <th>Sil</th>
-              </tr>";
-
-        while ($row = $result->fetch_assoc()) {
-            echo "<tr>";
-            echo "<td>{$row['id']}</td>";
-            echo "<td>{$row['title']}</td>";
-            echo "<td>{$row['author']}</td>";
-            echo "<td>{$row['category']}</td>";
-            echo "<td>{$row['year']}</td>";
-            echo "<td>{$row['isbn']}</td>";
-            
-            echo "<td>
-                    <form action='admin.php' method='post'>
-                        <input type='hidden' name='delete_id' value='{$row['id']}'>
-                       <button class='btn btn-delete' type='submit'>Sil</button>
-
-                    </form>
-                  </td>";
-            echo "</tr>";
-        }
-
-        echo "</table>";
-    } else {
-        echo "<p>Henüz kitap eklenmemiş.</p>";
-    }
-    ?>
-    </div>
 <!-- Bölüm 3: Ödünç Alma İstekleri -->
 <div class="section">
     <h3>Bekleyen Ödünç Alma İstekleri</h3>
@@ -293,7 +203,7 @@ if (isset($_POST['send_reminders'])) {
     <?php
     // pending borrow request'leri çek
     $query = "
-        SELECT br.id, u.name AS user_name, b.title AS book_title,
+        SELECT br.id, u.fullname AS user_name, b.title AS book_title,
                br.borrow_date, br.due_date, br.status
         FROM borrowings br
         JOIN users u ON br.user_id = u.id
@@ -350,7 +260,7 @@ if (isset($_POST['send_reminders'])) {
 
     <?php
     $qApproved = "
-        SELECT br.id, u.name AS user_name, b.title AS book_title,
+        SELECT br.id, u.fullname AS user_name, b.title AS book_title,
                br.borrow_date, br.due_date
         FROM borrowings br
         JOIN users u ON br.user_id = u.id
@@ -397,16 +307,6 @@ if (isset($_POST['send_reminders'])) {
     ?>
 </div>
 </div>
-<!--EMAIL NOTIFICATION-->
-<div class="card">
-  <h3>Notifications</h3>
-  <form method="post" action="admin.php">
-    <button type="submit" name="send_reminders" class="btn btn-warning">
-      Send Due Date Reminders (Next 2 Days)
-    </button>
-  </form>
-</div>
-<!--BAK-->
 </body>
 </html>
 

@@ -58,7 +58,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   <title>Register</title>
   <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="theme-library">
+
 
 <div class="register-box">
   <h2>Create Account</h2>
@@ -70,6 +71,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <input type="password" name="confirmPassword" id="confirmPassword" placeholder="Confirm Password" required>
 
     <button type="submit">Register</button>
+
+    <p class="small-text">
+    Already have an account?
+     <a href="login.php">Login</a>
+   </p>
 
     <p id="errorMessage">
       <?php if ($errorMessage) echo htmlspecialchars($errorMessage); ?>
