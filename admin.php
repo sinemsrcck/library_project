@@ -58,7 +58,6 @@ if (isset($_POST['add_book'])) {
     $title = $conn->real_escape_string($_POST['title']);
     $author = $conn->real_escape_string($_POST['author']);
     $category = $conn->real_escape_string($_POST['category']);
-    $year = (int)$_POST['year'];
     $isbn = $conn->real_escape_string($_POST['isbn']);
 
     $query = "INSERT INTO books (title, author, category, year, isbn, is_available)
@@ -162,7 +161,6 @@ if (isset($_POST['delete_id'])) {
     <input type="text" name="author" id="author" placeholder="Yazar" required><br>
 
     <input type="text" name="category" id="category" placeholder="Kategori">
-    <input type="number" name="year" id="year" placeholder="Yıl"><br>
 
     <input type="text" name="isbn" id="isbn" placeholder="ISBN">
 
