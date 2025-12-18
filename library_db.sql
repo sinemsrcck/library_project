@@ -60,6 +60,6 @@ INSERT INTO users (fullname, email, password, role)
 VALUES (
   'Admin',
   'admin@library.com',
-  'admin123',
+  '$2y$10$1DZkKO35GYEtsb3l4YZ4xueIFmO.ZHwfgBG3PeuUoCkomulKRbJ7m',
   'admin'
 );
