@@ -60,7 +60,7 @@ if (isset($_POST['add_book'])) {
     $category = $conn->real_escape_string($_POST['category']);
     $isbn = $conn->real_escape_string($_POST['isbn']);
 
-    $query = "INSERT INTO books (title, author, category, , isbn, is_available)
+    $query = "INSERT INTO books (title, author, category, isbn, is_available)
               VALUES ('$title', '$author', '$category', '$isbn', 1)";
 
     $result = $conn->query($query);
@@ -142,20 +142,16 @@ if (isset($_POST['delete_id'])) {
     <label>Google’dan kitap seç:</label>
     <input type="text" id="bookSearch" placeholder="Kitap adı yaz..." autocomplete="off">
 
- <div id="bookResults" style="
-    border:1px solid #ccc;
-    border-radius:6px;
-    margin-top:5px;
-    margin-bottom:15px;
-    max-height:200px;
-    overflow:auto;
-    display:none;
-    background:#fff;
-
-    position: relative;
-    z-index: 9999;
-"></div>
-
+    <div id="bookResults" style="
+        border:1px solid #ccc;
+        border-radius:6px;
+        margin-top:5px;
+        margin-bottom:15px;
+        max-height:200px;
+        overflow:auto;
+        display:none;
+        background:#fff;
+    "></div>
      <form action="admin.php" method="post">
     <input type="text" name="title" id="title" placeholder="Kitap adı" required>
     <input type="text" name="author" id="author" placeholder="Yazar" required><br>
@@ -388,4 +384,4 @@ searchInput.addEventListener("input", async () => {
 
 </body>
 </html>
-
+ kodum doğru mu 
