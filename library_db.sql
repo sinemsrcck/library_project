@@ -59,6 +59,6 @@ INSERT INTO users (fullname, email, password, role)
 VALUES (
   'Admin',
   'admin@library.com',
-  '$2y$10$9y6Yx6b8uF1Z2YpZ8cM5oO2rZpYxM6zZ5z7qF9k2gq5G5eJ3kZ0vK',
+  '$2y$10$1DZkKO35GYEtsb3l4YZ4xueIFmO.ZHwfgBG3PeuUoCkomulKRbJ7m',
   'admin'
 );

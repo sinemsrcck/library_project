@@ -41,6 +41,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             header("Location: admin.php");
             exit;
           } else {
+            unset($_SESSION["is_admin"]);
             $_SESSION["user_id"] = $id;
             $_SESSION["fullname"] = $fullname;
             $_SESSION["email"] = $email;
