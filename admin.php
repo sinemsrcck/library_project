@@ -60,8 +60,8 @@ if (isset($_POST['add_book'])) {
     $category = $conn->real_escape_string($_POST['category']);
     $isbn = $conn->real_escape_string($_POST['isbn']);
 
-    $query = "INSERT INTO books (title, author, category, year, isbn, is_available)
-              VALUES ('$title', '$author', '$category', '$year', '$isbn', 1)";
+    $query = "INSERT INTO books (title, author, category, , isbn, is_available)
+              VALUES ('$title', '$author', '$category', '$isbn', 1)";
 
     $result = $conn->query($query);
 
@@ -184,7 +184,6 @@ if (isset($_POST['delete_id'])) {
                 <th>Title</th>
                 <th>Author</th>
                 <th>Category</th>
-                <th>Year</th>
                 <th>Action</th>
               </tr>";
 
@@ -195,7 +194,6 @@ if (isset($_POST['delete_id'])) {
                   <td>" . htmlspecialchars($row['title']) . "</td>
                   <td>" . htmlspecialchars($row['author']) . "</td>
                   <td>" . htmlspecialchars($row['category']) . "</td>
-                  <td>" . htmlspecialchars($row['year']) . "</td>
                   <td style='display:flex; gap:8px; align-items:center;'>
                     
                     <a href='book_detail.php?id={$id}' class='btn btn-primary'>Details</a>
@@ -356,7 +354,6 @@ searchInput.addEventListener("input", async () => {
       const info = book.volumeInfo || {};
       const title = info.title || "";
       const author = (info.authors || []).join(", ");
-      const year = info.publishedDate ? info.publishedDate.substring(0,4) : "";
       const category = (info.categories || [""])[0];
       const isbn =
         info.industryIdentifiers?.find(i => i.type === "ISBN_13")?.identifier ||
@@ -372,7 +369,6 @@ searchInput.addEventListener("input", async () => {
       div.onclick = () => {
         document.getElementById("title").value = title;
         document.getElementById("author").value = author;
-        document.getElementById("year").value = year;
         document.getElementById("category").value = category;
         document.getElementById("isbn").value = isbn;
 

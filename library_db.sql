@@ -26,7 +26,6 @@ CREATE TABLE IF NOT EXISTS books (
     title VARCHAR(200) NOT NULL,
     author VARCHAR(100) NOT NULL,
     category VARCHAR(50),
-    year INT,
     isbn VARCHAR(50),
     is_available TINYINT(1) DEFAULT 1
 );

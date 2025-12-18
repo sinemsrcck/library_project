@@ -121,7 +121,6 @@ echo $message;
 
   <p><strong>Author:</strong> <?php echo htmlspecialchars($book["author"]); ?></p>
   <p><strong>Category:</strong> <?php echo htmlspecialchars($book["category"]); ?></p>
-  <p><strong>Year:</strong> <?php echo htmlspecialchars($book["year"]); ?></p>
   <p><strong>ISBN:</strong> <?php echo htmlspecialchars($book["isbn"]); ?></p>
 
   <?php if ($book["is_available"] == 1): ?>
