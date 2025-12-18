@@ -138,16 +138,38 @@ if (isset($_POST['delete_id'])) {
 
     <!-- Kart 1: Kitap Ekle -->
     <div class="navbar">
-        <h3>Kitap Ekle</h3>
+    <h3>Kitap Ekle</h3>
+   <!-- 🔍 Google’dan Kitap Ara -->
+    <label>Google’dan kitap seç:</label>
+    <input type="text" id="bookSearch" placeholder="Kitap adı yaz..." autocomplete="off">
 
-        <form action="admin.php" method="post">
-            <input type="text" name="title" placeholder="Kitap adı" required>
-            <input type="text" name="author" placeholder="Yazar" required><br>
-            <input type="text" name="category" placeholder="Kategori">
-            <input type="number" name="year" placeholder="Yıl"><br>
-            <input type="text" name="isbn" placeholder="ISBN">
-            <button type="submit" name="add_book" class="btn btn-primary">Kitap Ekle</button>
-        </form>
+ <div id="bookResults" style="
+    border:1px solid #ccc;
+    border-radius:6px;
+    margin-top:5px;
+    margin-bottom:15px;
+    max-height:200px;
+    overflow:auto;
+    display:none;
+    background:#fff;
+
+    position: relative;
+    z-index: 9999;
+"></div>
+
+     <form action="admin.php" method="post">
+    <input type="text" name="title" id="title" placeholder="Kitap adı" required>
+    <input type="text" name="author" id="author" placeholder="Yazar" required><br>
+
+    <input type="text" name="category" id="category" placeholder="Kategori">
+    <input type="number" name="year" id="year" placeholder="Yıl"><br>
+
+    <input type="text" name="isbn" id="isbn" placeholder="ISBN">
+
+    <button type="submit" name="add_book" class="btn btn-primary">
+        Kitap Ekle
+    </button>
+</form>
     </div>
 
     <!-- Bölüm 2: Mevcut Kitaplar -->
@@ -307,6 +329,69 @@ if (isset($_POST['delete_id'])) {
     ?>
 </div>
 </div>
+<script>
+const searchInput = document.getElementById("bookSearch");
+const resultsDiv = document.getElementById("bookResults");
+
+searchInput.addEventListener("input", async () => {
+  const q = searchInput.value.trim();
+  if (q.length < 3) {
+    resultsDiv.style.display = "none";
+    return;
+  }
+
+  try {
+    const res = await fetch(
+      `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(q)}&maxResults=6`
+    );
+    const data = await res.json();
+
+    resultsDiv.innerHTML = "";
+    resultsDiv.style.display = "block";
+
+    if (!data.items) {
+      resultsDiv.innerHTML = "<div style='padding:8px;'>Sonuç yok</div>";
+      return;
+    }
+
+    data.items.forEach(book => {
+      const info = book.volumeInfo || {};
+      const title = info.title || "";
+      const author = (info.authors || []).join(", ");
+      const year = info.publishedDate ? info.publishedDate.substring(0,4) : "";
+      const category = (info.categories || [""])[0];
+      const isbn =
+        info.industryIdentifiers?.find(i => i.type === "ISBN_13")?.identifier ||
+        info.industryIdentifiers?.find(i => i.type === "ISBN_10")?.identifier ||
+        "";
+
+      const div = document.createElement("div");
+      div.style.padding = "8px";
+      div.style.cursor = "pointer";
+      div.style.borderBottom = "1px solid #eee";
+      div.innerHTML = `<strong>${title}</strong><br><small>${author}</small>`;
+
+      div.onclick = () => {
+        document.getElementById("title").value = title;
+        document.getElementById("author").value = author;
+        document.getElementById("year").value = year;
+        document.getElementById("category").value = category;
+        document.getElementById("isbn").value = isbn;
+
+        resultsDiv.style.display = "none";
+        searchInput.value = "";
+      };
+
+      resultsDiv.appendChild(div);
+    });
+
+  } catch (err) {
+    resultsDiv.innerHTML = "<div style='padding:8px;'>Hata oluştu</div>";
+    resultsDiv.style.display = "block";
+  }
+});
+</script>
+
 </body>
 </html>
 
