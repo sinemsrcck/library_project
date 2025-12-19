@@ -127,8 +127,7 @@ $is_admin = ($user['role'] === 'admin');
             <p><strong>Full Name:</strong> <?= htmlspecialchars($user['fullname']) ?></p>
             <p><strong>Email:</strong> <?= htmlspecialchars($user['email']) ?></p>
             <p><strong>Role:</strong> <?= ucfirst($user['role']) ?></p>
-            <p><strong>Member Since:</strong>
-                <?= $user['created_at'] ? date("d M Y, H:i", strtotime($user['created_at'])) : "Unknown" ?></p>
+            
         </div>
 
         <hr style="margin: 30px 0;">
