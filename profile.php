@@ -87,6 +87,7 @@ $is_admin = ($user['role'] === 'admin');
             color: #555;
         }
     </style>
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
 </head>
 
 <body class="theme-library">
@@ -94,7 +95,7 @@ $is_admin = ($user['role'] === 'admin');
     <div class="navbar">
         <!-- Logo Left -->
         <a href="index.php">
-            <img src="logo.png" alt="Logo" class="nav-logo">
+            <img src="images/logo.png" alt="Logo" class="nav-logo">
         </a>
 
         <!-- Links Center -->

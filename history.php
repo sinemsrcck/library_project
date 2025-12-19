@@ -44,6 +44,7 @@ if (!$result)
     <link rel="stylesheet" href="styles.css?v=<?php echo time(); ?>">
     <meta charset="UTF-8">
     <title>Borrowing History</title>
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
 </head>
 
 <body class="theme-library">
@@ -51,7 +52,7 @@ if (!$result)
     <div class="navbar">
         <!-- Logo Left -->
         <a href="index.php">
-            <img src="logo.png" alt="Logo" class="nav-logo">
+            <img src="images/logo.png" alt="Logo" class="nav-logo">
         </a>
 
         <!-- Links Center -->

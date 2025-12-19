@@ -78,6 +78,7 @@ if ($book && isset($_POST["borrow"])) {
     <?php echo $book ? htmlspecialchars($book["title"]) : "Book Not Found"; ?>
   </title>
   <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="images/favicon.ico" type="image/x-icon">
 </head>
 <body class="theme-library">
 

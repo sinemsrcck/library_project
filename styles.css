@@ -374,9 +374,12 @@ tr:hover td {
 }
 
 .theme-library .navbar .nav-logo {
-  height: 64px;
+  height: 80px;
   width: auto;
+  transform: translateX(50px);
 }
+
+
 
 .theme-library .navbar .nav-links {
   display: flex;
@@ -693,3 +696,27 @@ tr:hover td {
   margin-top: 5px;
 }
 
+.theme-library .navbar a.btn {
+  background-color: #4b2a2a;   /* istediğin renk */
+  color: #f0edea;
+  padding: 8px 14px;
+  border-radius: 8px;
+  margin: 0 4px;
+  text-decoration: none;
+}
+.theme-library .navbar a.btn:hover {
+  background-color: #e4d9d1;   /* hover rengi */
+  color: #4b2a2a;
+}
+
+.login-top-image {
+  display: flex;
+  justify-content: center;
+  margin-left: -50px;
+  margin-bottom: -30px;
+}
+
+.login-top-image img {
+  width: 600px;   /* buradan büyüt/küçült */
+  height: auto;
+}

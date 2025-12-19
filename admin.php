@@ -140,6 +140,10 @@ if (isset($_POST['delete_id'])) {
 <body class="theme-library">
 
    <div class="navbar">
+    <!-- Logo Left -->
+        <a href="index.php">
+            <img src="images/logo.png" alt="Logo" class="nav-logo">
+        </a>
   <a class="btn btn-primary" href="index.php">Home</a>
   <a class="btn btn-primary" href="dashboard.php">Dashboard</a>
   <a class="btn btn-primary" href="history.php">History</a>
@@ -154,7 +158,7 @@ if (isset($_POST['delete_id'])) {
     <div class="navbar">
     <h3>Kitap Ekle</h3>
    <!-- 🔍 Google’dan Kitap Ara -->
-    <label>Google’dan kitap seç:</label>
+    
     <input type="text" id="bookSearch" placeholder="Kitap adı yaz..." autocomplete="off">
 
     <div id="bookResults" style="

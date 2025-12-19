@@ -11,6 +11,7 @@ $conn = db();
   <meta charset="UTF-8">
   <title>Library Search</title>
   <link rel="stylesheet" href="styles.css?v=<?php echo time(); ?>">
+  <link rel="icon" href="images/favicon.ico" type="image/x-icon">
 </head>
 
 <body class="theme-library">
@@ -18,7 +19,7 @@ $conn = db();
   <div class="navbar">
     <!-- Logo Left -->
     <a href="index.php">
-      <img src="logo.png" alt="Logo" class="nav-logo">
+      <img src="images/logo.png" alt="Logo" class="nav-logo">
     </a>
 
     <!-- Links Center -->

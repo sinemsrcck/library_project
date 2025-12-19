@@ -72,11 +72,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Digital Library</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
 </head>
 <body class="auth-page theme-library">
 
 <div class="container">
+
+    <div class="login-top-image">
+    <img src="images/giris.png" alt="Login Icon">
+</div>
+
+
     <form id="loginForm" class="form-box" method="POST">
+      
         <div style="display:flex; gap:10px; margin-bottom:20px; justify-content:center;">
   <button type="button" class="btn btn-success" id="userBtn">User</button>
   <button type="button" class="btn btn-primary" id="adminBtn">Admin</button>
