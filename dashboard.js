@@ -15,8 +15,16 @@ async function loadDashboard() {
 
   activeBooks.forEach(book => {
     activeBooksDiv.innerHTML += `
-      <p><strong>${escapeHtml(book.title)}</strong><br>
-      Borrowed on: ${escapeHtml(book.borrowed_on)}</p><hr>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <div>
+           <strong>${escapeHtml(book.title)}</strong><br>
+           <small>Borrowed on: ${escapeHtml(book.borrowed_on)}</small>
+        </div>
+        <button class="btn-sm" style="background:#e74c3c; color:#fff; border:none; padding:6px 12px; border-radius:4px; cursor:pointer;" onclick="returnBook(${book.borrow_id})">
+          Return
+        </button>
+      </div>
+      <hr>
     `;
   });
 
@@ -35,17 +43,17 @@ async function loadDashboard() {
     const mins = Math.floor((abs / (1000 * 60)) % 60);
 
     let countdownText = "";
-let color = "#27ae60"; // green (default)
+    let color = "#27ae60"; // green (default)
 
-if (overdue) {
-  countdownText = `Overdue by ${days}d ${hours}h ${mins}m`;
-  color = "#e74c3c"; // red
-} else if (days <= 2) {
-  countdownText = `⚠ Due in ${days} day(s)`;
-  color = "#f39c12"; // orange
-} else {
-  countdownText = `Time left: ${days}d ${hours}h ${mins}m`;
-}
+    if (overdue) {
+      countdownText = `Overdue by ${days}d ${hours}h ${mins}m`;
+      color = "#e74c3c"; // red
+    } else if (days <= 2) {
+      countdownText = `⚠ Due in ${days} day(s)`;
+      color = "#f39c12"; // orange
+    } else {
+      countdownText = `Time left: ${days}d ${hours}h ${mins}m`;
+    }
 
 
     dueDatesDiv.innerHTML += `
@@ -60,6 +68,28 @@ if (overdue) {
       <hr>
     `;
   });
+}
+
+async function returnBook(borrowId) {
+  if (!confirm("Are you sure you want to return this book?")) return;
+
+  try {
+    const res = await fetch("return_book.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ borrow_id: borrowId })
+    });
+    const result = await res.json();
+    if (result.success) {
+      alert("Book returned successfully!");
+      loadDashboard();
+    } else {
+      alert("Error: " + (result.msg || "Unknown error"));
+    }
+  } catch (e) {
+    console.error(e);
+    alert("Connection error.");
+  }
 }
 
 // basit güvenlik

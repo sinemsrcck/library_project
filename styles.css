@@ -6,10 +6,12 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: Arial, sans-serif;
-  background: #f4f4f4;
-  color: #222;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #fdfaf6;
+  /* warmer cream */
+  color: #333;
   text-align: center;
+  line-height: 1.6;
 }
 
 /* ========== ANA CONTAINER ========== */
@@ -20,53 +22,114 @@ body {
 }
 
 /* ========== BAŞLIKLAR ========== */
-h1, h2, h3 {
-  font-weight: 600;
+h1,
+h2,
+h3 {
+  font-weight: 700;
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
+  color: #2c3e50;
 }
 
 /* ========== KARTLAR ========== */
 .card {
   background: #fff;
-  border-radius: 8px;
-  padding: 20px 25px;
+  border-radius: 12px;
+  padding: 24px 30px;
   margin-bottom: 25px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  box-shadow: 0 4px 20px rgba(200, 180, 180, 0.06);
+  transition: transform 0.2s, box-shadow 0.2s;
+  border: 1px solid #eaeaea;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
 }
 
 /* Admin / history bölümleri */
 .section {
-  margin-top: 25px;
+  margin-top: 30px;
 }
 
 /* ========== FORMLAR ========== */
-input, select {
-  padding: 8px 10px;
+input,
+select {
+  padding: 12px 14px;
   margin: 8px 0;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
   width: 100%;
+  font-size: 14px;
+  transition: border-color 0.2s;
+  background: #fdfdfd;
 }
 
-input:focus, select:focus {
+input:focus,
+select:focus {
   outline: none;
   border-color: #4a90e2;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
 }
 
 /* ========== BUTONLAR ========== */
 .btn {
-  padding: 8px 14px;
+  padding: 10px 18px;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-block;
+  transition: all 0.2s;
+  letter-spacing: 0.5px;
 }
 
-.btn-primary { background: #4a90e2; color: #fff; }
-.btn-success { background: #27ae60; color: #fff; }
-.btn-warning { background: #f39c12; color: #fff; }
-.btn-danger  { background: #e74c3c; color: #fff; }
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn-primary {
+  background: #4a90e2;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: #357abd;
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.25);
+}
+
+.btn-success {
+  background: #27ae60;
+  color: #fff;
+}
+
+.btn-success:hover {
+  background: #219150;
+  box-shadow: 0 4px 12px rgba(39, 174, 96, 0.25);
+}
+
+.btn-warning {
+  background: #f39c12;
+  color: #fff;
+}
+
+.btn-warning:hover {
+  background: #d3860d;
+  box-shadow: 0 4px 12px rgba(243, 156, 18, 0.25);
+}
+
+.btn-danger {
+  background: #e74c3c;
+  color: #fff;
+}
+
+.btn-danger:hover {
+  background: #c0392b;
+  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.25);
+}
 
 .btn-delete {
   background: #e74c3c;
@@ -74,7 +137,7 @@ input:focus, select:focus {
 }
 
 .btn-disabled {
-  background: #999;
+  background: #bdc3c7;
   color: #fff;
   cursor: not-allowed;
 }
@@ -93,278 +156,494 @@ input:focus, select:focus {
 /* ========== TABLOLAR ========== */
 table {
   width: 100%;
-  border-collapse: collapse;
-  margin-top: 15px;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-top: 20px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
-th, td {
-  border: 1px solid #ddd;
-  padding: 8px 10px;
+th,
+td {
+  padding: 12px 15px;
   text-align: left;
+  border-bottom: 1px solid #e0e0e0;
 }
 
 th {
-  background: #f0f0f0;
+  background: #f8f9fa;
   font-weight: 600;
+  color: #555;
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+tr:hover td {
+  background: #fafafa;
 }
 
 /* ========== STATUS RENKLERİ ========== */
-.status-approved { color: #27ae60; font-weight: bold; }
-.status-pending  { color: #f39c12; font-weight: bold; }
-.status-rejected { color: #e74c3c; font-weight: bold; }
-.status-returned { color: #2980b9; font-weight: bold; }
+.status-approved {
+  color: #27ae60;
+  font-weight: bold;
+  background: rgba(39, 174, 96, 0.1);
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.status-pending {
+  color: #f39c12;
+  font-weight: bold;
+  background: rgba(243, 156, 18, 0.1);
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.status-rejected {
+  color: #e74c3c;
+  font-weight: bold;
+  background: rgba(231, 76, 60, 0.1);
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.status-returned {
+  color: #2980b9;
+  font-weight: bold;
+  background: rgba(41, 128, 185, 0.1);
+  padding: 4px 8px;
+  border-radius: 4px;
+}
 
 /* ========== MESAJLAR ========== */
-.msg-success { color: #27ae60; text-align: center; }
-.msg-error   { color: #e74c3c; text-align: center; }
-.msg-info    { color: #2980b9; text-align: center; }
+.msg-success {
+  color: #27ae60;
+  text-align: center;
+  font-weight: bold;
+  padding: 10px;
+  background: #eafff0;
+  border-radius: 6px;
+}
+
+.msg-error {
+  color: #e74c3c;
+  text-align: center;
+  font-weight: bold;
+  padding: 10px;
+  background: #ffe9e9;
+  border-radius: 6px;
+}
+
+.msg-info {
+  color: #2980b9;
+  text-align: center;
+}
 
 /* ========== SEARCH / HOME ========== */
 .search-container {
-  width: 60%;
+  width: 70%;
   margin: 30px auto;
   display: flex;
-  gap: 10px;
+  gap: 12px;
+  background: #fff;
+  padding: 8px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
 }
 
 .search-container input,
 .search-container select {
-  width: 40%;
+  border: 1px solid #eee;
+  margin: 0;
 }
 
 .search-container button {
-  width: 20%;
-  background: #0077cc;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.search-container button:hover {
-  background: #005fa3;
+  width: auto;
+  padding: 0 24px;
 }
 
 .book-card {
-  background: #eee;
-  margin: 10px auto;
-  padding: 10px;
-  width: 200px;
+  background: #fff;
+  margin: 0;
+  padding: 0;
+  border: 1px solid #eaeaea;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.book-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.book-card .content {
+  padding: 20px;
 }
 
 /* ========== LOGIN & REGISTER ========== */
 .form-box,
 .register-box {
-  width: 350px;
+  width: 400px;
   background: #fff;
-  margin: 80px auto;
-  padding: 25px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  margin: 60px auto;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
 }
 
 .form-box h2,
 .register-box h2 {
-  margin-bottom: 20px;
+  margin-bottom: 24px;
+  color: #333;
 }
 
 .form-box button,
 .register-box button {
+  margin-top: 10px;
   width: 100%;
   padding: 12px;
-  background: #0077cc;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.form-box button:hover,
-.register-box button:hover {
-  background: #005fa3;
 }
 
 .small-text {
   font-size: 14px;
+  color: #666;
+  margin-top: 15px;
 }
 
 /* ========== BOOK DETAIL ========== */
 .book-detail {
-  width: 350px;
+  width: 600px;
   background: white;
-  margin: 80px auto;
-  padding: 20px;
-  border-radius: 10px;
+  margin: 60px auto;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  text-align: left;
 }
 
 .book-detail img {
   width: 100%;
-  border-radius: 10px;
+  border-radius: 12px;
+  margin-bottom: 20px;
 }
+
 /* =========================
-   LIBRARY THEME (NO OVERRIDE)
+   LIBRARY THEME (ENHANCED)
    Activate by adding: <body class="theme-library">
 ========================= */
 
 .theme-library {
-  background: #f7f3e9; /* paper */
-  color: #2b2b2b;
-  font-family: Georgia, "Times New Roman", serif;
+  background: #f9f7f2;
+  /* soft paper */
+  color: #2c3e50;
+  font-family: 'Merriweather', 'Georgia', serif;
+  /* Modern serif */
 }
 
 /* başlık hissi */
 .theme-library h1,
 .theme-library h2,
 .theme-library h3 {
-  font-family: Georgia, "Times New Roman", serif;
-  letter-spacing: .2px;
+  font-family: 'Merriweather', 'Georgia', serif;
+  color: #4b2a2a;
 }
 
-/* sadece navbar için ayrı görünüm (eski .card’a dokunmaz) */
+/* sadece navbar için ayrı görünüm */
 .theme-library .navbar {
-  background: linear-gradient(180deg, #4b2a2a, #6a3b3b);
-  border: 1px solid rgba(0,0,0,.18);
-  border-radius: 12px;
-  padding: 12px;
-  max-width: 900px;
-  margin: 18px auto 26px;
+  background: #fff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 0 0 16px 16px;
+  padding: 10px 20px;
+  max-width: 1000px;
+  /* Slightly wider for new layout */
+  margin: 0 auto 40px;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.03);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-/* navbar içindeki butonlar (global .btn değişmez) */
-.theme-library .navbar .btn {
-  background: rgba(255,255,255,.12);
-  border: 1px solid rgba(255,255,255,.18);
-  color: #fff;
-  text-decoration: none;
+.theme-library .navbar .nav-logo {
+  height: 64px;
+  width: auto;
 }
-.theme-library .navbar .btn:hover { opacity: .92; }
+
+.theme-library .navbar .nav-links {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-grow: 1;
+  /* Allows it to take up space and centering */
+}
+
+.theme-library .navbar .nav-actions {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+/* navbar içindeki butonlar */
+.theme-library .navbar .btn {
+  background: transparent;
+  color: #555;
+  border: 1px solid transparent;
+  box-shadow: none;
+  font-weight: 500;
+  padding: 8px 16px;
+}
+
+.theme-library .navbar .btn:hover {
+  color: #4b2a2a;
+  background: rgba(75, 42, 42, 0.05);
+}
+
+.theme-library .navbar .btn-primary {
+  color: #555;
+}
+
+.theme-library .navbar .btn-danger {
+  color: #e74c3c;
+}
+
+
+/* ========== PROFILE ICON (NAVBAR INTEGRATED) ========== */
+.profile-icon-btn {
+  /* Reset absolute positioning */
+  position: static;
+  width: 40px;
+  height: 40px;
+  background: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4b2a2a;
+  text-decoration: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s;
+  border: 1px solid #eee;
+}
+
+.profile-icon-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  color: #6a3b3b;
+}
+
+.profile-icon-btn svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
 
 /* sayfa içi “panel” sınıfı: sadece bunu verdiğin kartlar değişir */
 .theme-library .lt-panel {
-  background: #fffdf8;
-  border: 1px solid #d8cfbf;
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  background: #fff;
+  border: 1px solid #ebebeb;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
 }
 
 /* kitap kartlarına istersen kapak hissi */
 .theme-library .book-card .cover {
-  height: 160px;
-  border: 1px solid #d8cfbf;
-  border-radius: 8px;
-  margin-bottom: 10px;
-  background: repeating-linear-gradient(
-    45deg,
-    #efe7d8,
-    #efe7d8 10px,
-    #f8f3ea 10px,
-    #f8f3ea 20px
-  );
+  height: 180px;
+  border-bottom: 1px solid #eee;
+  border-radius: 0;
+  margin-bottom: 15px;
+  background: #f4f0e6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #a49685;
+  font-size: 30px;
 }
 
-/* küçük uyarı badge’i (Due in 2 days gibi) */
+/* küçük uyarı badge’i update */
 .theme-library .badge {
   display: inline-block;
-  padding: 4px 10px;
-  border-radius: 999px;
-  font-weight: 700;
-  font-size: 12px;
-  border: 1px solid #d8cfbf;
-  background: #fff6e6;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
-.theme-library .badge-warning { background:#fff1da; border-color:#f2d19a; }
-.theme-library .badge-danger  { background:#ffe9e9; border-color:#f0b3b3; }
-.theme-library .badge-ok      { background:#eafff0; border-color:#a9e3bf; }
+
+.theme-library .badge-warning {
+  background: #fff8e1;
+  color: #f39c12;
+}
+
+.theme-library .badge-danger {
+  background: #ffebee;
+  color: #e74c3c;
+}
+
+.theme-library .badge-ok {
+  background: #e8f5e9;
+  color: #27ae60;
+}
+
 
 /* =========================
-   LOGIN – LIBRARY THEME
+   LOGIN – LIBRARY THEME (MODERNIZED)
 ========================= */
 
 /* Login / Register kart rengi */
 .theme-library .form-box,
-.theme-library .register-box{
-  background: #fffaf0; /* krem */
-  border: 1px solid #d8cfbf;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+.theme-library .register-box {
+  background: #fff;
+  border: none;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
 }
 
 /* User / Admin seçim butonları */
 .theme-library #userBtn,
-.theme-library #adminBtn{
-  background: #4b2a2a;   /* bordo */
-  color: #fff;
-  border: 1px solid #3a1f1f;
+.theme-library #adminBtn {
+  background: #f1f2f6;
+  color: #555;
+  border: none;
+}
+
+.theme-library .btn-primary {
+  background-color: #f1f2f6;
+  color: #555;
 }
 
 .theme-library #userBtn:hover,
-.theme-library #adminBtn:hover{
-  background: #6a3b3b;
+.theme-library #adminBtn:hover {
+  background: #e1e2e6;
+}
+
+.theme-library .btn-success {
+  background-color: #4b2a2a !important;
+  color: #fff !important;
 }
 
 /* Login submit butonu */
-.theme-library .form-box button[type="submit"]{
-  background: #4b2a2a;
+.theme-library .form-box button[type="submit"],
+.theme-library .register-box button[type="submit"] {
+  background: linear-gradient(135deg, #4b2a2a, #804040);
   border: none;
   color: #fff;
   font-weight: 600;
+  font-size: 16px;
+  box-shadow: 0 4px 15px rgba(106, 59, 59, 0.3);
 }
 
-.theme-library .form-box button[type="submit"]:hover{
-  background: #6a3b3b;
+.theme-library .form-box button[type="submit"]:hover,
+.theme-library .register-box button[type="submit"]:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(106, 59, 59, 0.4);
 }
 
 /* Input başlıkları (Email / Password yazıları) */
-.theme-library label{
+.theme-library label {
   font-weight: 600;
-  color: #3a2a2a;
+  color: #4b2a2a;
+  margin-top: 15px;
+  display: block;
+  text-align: left;
+}
+
+.theme-library input {
+  background: #f9f9f9;
+  border: 1px solid #eee;
+}
+
+.theme-library input:focus {
+  background: #fff;
+  border-color: #4b2a2a;
+  box-shadow: 0 0 0 3px rgba(75, 42, 42, 0.1);
 }
 
 /* Register link rengi */
-.theme-library .small-text a{
-  color: #6a3b3b;
-  font-weight: 600;
+.theme-library .small-text a {
+  color: #4b2a2a;
+  font-weight: 700;
 }
+
 /* ===== Fix: Home/Search layout (theme-library) ===== */
-.theme-library h2{
-  margin: 22px 0 10px;
+.theme-library h2 {
+  margin: 30px 0 20px;
 }
 
 /* Search input + select hizası */
 .theme-library #searchInput,
-.theme-library #categorySelect{
-  width: min(720px, 92%);
-  display: block;
-  margin: 10px auto;
+.theme-library #categorySelect {
+  background: #fff;
+  border-radius: 50px;
+  /* pill shape */
+  padding: 14px 24px;
 }
 
 /* dropdown biraz daha kısa olsun */
-.theme-library #categorySelect{
+.theme-library #categorySelect {
   max-width: 360px;
 }
 
 /* book list grid ortalama + boşluk */
-.theme-library #bookList{
-  width: min(920px, 92%);
-  margin: 18px auto 40px;
+.theme-library #bookList {
+  width: min(1100px, 92%);
+  margin: 30px auto 60px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 18px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
 }
 
 /* book kartı görünümü */
-.theme-library .book-card{
-  background: #fffaf0;
-  border: 1px solid #d8cfbf;
-  border-radius: 10px;
-  padding: 18px 16px;
+.theme-library .book-card {
+  background: #fff;
+  border: none;
+  border-radius: 16px;
+  padding: 24px;
+  /* Padding directly on the card */
   text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  /* Flexbox for alignment */
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.theme-library .book-card h4 {
+  color: #4b2a2a;
+  font-size: 18px;
+  margin: 0 0 10px 0;
+  flex-grow: 0;
+}
+
+.theme-library .book-card p {
+  margin: 5px 0;
+  color: #666;
 }
 
 /* Details butonu bordo olsun */
-.theme-library .book-card .btn-primary{
+.theme-library .book-card .btn-primary {
   background: #4b2a2a;
-  border: 1px solid #3a1f1f;
+  color: #ffffff;
+  /* Yazı rengi beyaz */
+  font-weight: 600;
+  border: none;
+  border-radius: 50px;
+  padding: 10px 24px;
+  margin-top: auto;
+  /* Pushes button to bottom */
+  align-self: center;
+  /* Centers button horizontally */
 }
-.theme-library .book-card .btn-primary:hover{
+
+.theme-library .book-card .btn-primary:hover {
   background: #6a3b3b;
+  box-shadow: 0 4px 15px rgba(75, 42, 42, 0.2);
 }
