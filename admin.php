@@ -154,7 +154,7 @@ if (isset($_POST['delete_id'])) {
         <h1>Admin Panel</h1>
 
         <!-- Kart 1: Kitap Ekle -->
-        <div class="card">
+        <div class="navbar">
             <h3>Kitap Ekle</h3>
             <!-- 🔍 Google’dan Kitap Ara -->
             <label>Google’dan kitap seç:</label>
