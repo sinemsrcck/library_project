@@ -10,6 +10,7 @@ if ($user_id === 0) {
   exit;
 }
 
+
 // Book ID
 $book_id = isset($_GET["id"]) ? (int)$_GET["id"] : 0;
 
@@ -19,12 +20,7 @@ if ($book_id <= 0) {
 }
 
 
-// Şimdilik sabit kullanıcı
-$user_id = $_SESSION["user_id"] ?? 0;
-if ($user_id === 0) {
-   header("Location: login.php");
-   exit;
-}
+
 
 
 $message = "";
