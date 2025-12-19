@@ -19,14 +19,17 @@ function displayBooks() {
 
     return searchMatch && categoryMatch;
   });
-console.log(book.cover_url);
+
 
   filteredBooks.forEach(book => {
     const statusText = (parseInt(book.is_available) === 1) ? "Available" : "Not available";
-
+   
+    console.log(book.cover_url);
     const img = book.cover_url
-      ? `<img src="${book.cover_url}" alt="Book cover" style="width:100%;border-radius:10px;margin-bottom:8px;">`
-      : "";
+  ? `<img class="book-cover" src="${book.cover_url}" alt="Book cover"
+      onerror="this.style.display='none'">`
+  : "";
+
 
     bookList.innerHTML += `
       <div class="book-card">
