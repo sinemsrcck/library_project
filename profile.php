@@ -49,7 +49,7 @@ if (isset($_POST['change_password'])) {
 }
 
 // Fetch User Info
-$stmt = $conn->prepare("SELECT fullname, email, created_at, role FROM users WHERE id = ?");
+$stmt = $conn->prepare("SELECT fullname, email, role FROM users WHERE id = ?");
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $user = $stmt->get_result()->fetch_assoc();
