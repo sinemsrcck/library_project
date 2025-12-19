@@ -126,6 +126,9 @@ if (isset($_POST['delete_id'])) {
     <link rel="stylesheet" href="styles.css">
     <meta charset="UTF-8">
     <title>Admin Panel</title>
+    <link rel="icon" href="assest/images/favicon.ico" type="image/x-icon">
+
+
 </head>
 
 <body class="theme-library">
