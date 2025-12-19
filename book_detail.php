@@ -18,12 +18,6 @@ if ($book_id <= 0) {
 }
 
 
-// Şimdilik sabit kullanıcı
-$user_id = $_SESSION["user_id"] ?? 0;
-if ($user_id === 0) {
-   header("Location: login.php");
-   exit;
-}
 
 
 $message = "";
