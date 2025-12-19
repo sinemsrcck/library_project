@@ -686,3 +686,10 @@ tr:hover td {
   background-color: #f5f5f5;
   border-radius: 10px;
 }
+
+.book-stock {
+  font-size: 14px;
+  color: #555;
+  margin-top: 5px;
+}
+

@@ -29,11 +29,13 @@ if (isset($_POST['approve_id'])) {
     }
     if ($resBook) $resBook->close();
 
-    // 3) Kitabı "müsait değil" yap
-    $ok2 = true;
-    if ($book_id !== null) {
-        $ok2 = $conn->query("UPDATE books SET is_available = 0 WHERE id = $book_id");
-    }
+
+    // 3) Kitabın available_copies sayısını 1 azalt
+$ok2 = true;
+if ($book_id !== null) {
+    $ok2 = $conn->query("UPDATE books SET available_copies = available_copies - 1 WHERE id = $book_id AND available_copies > 0");
+}
+
 
     if ($ok1 && $ok2) {
         echo "<p style='color:green;'>İstek onaylandı ve kitap artık müsait değil.</p>";
@@ -66,8 +68,8 @@ if (isset($_POST['add_book'])) {
    $cover_url = $conn->real_escape_string($_POST['cover_url'] ?? '');
 
     $year = (int)($_POST['year'] ?? 0);
-    $query = "INSERT INTO books (title, author, category, year, isbn, cover_url, is_available)
-            VALUES ('$title', '$author', '$category', $year, '$isbn', '$cover_url', 1)";
+    $query = "INSERT INTO books (title, author, category, year, isbn, cover_url, available_copies)
+            VALUES ('$title', '$author', '$category', $year, '$isbn', '$cover_url', 1, 1)";
 
 
 
@@ -95,10 +97,12 @@ if (isset($_POST['return_id'])) {
     $ok1 = $conn->query("UPDATE borrowings SET status = 'returned' WHERE id = $id");
 
     // 3) Kitabı tekrar müsait yap
-    $ok2 = true;
-    if ($book_id !== null) {
-        $ok2 = $conn->query("UPDATE books SET is_available = 1 WHERE id = $book_id");
-    }
+    // 3) Kitabın available_copies sayısını 1 artır
+$ok2 = true;
+if ($book_id !== null) {
+    $ok2 = $conn->query("UPDATE books SET available_copies = available_copies + 1 WHERE id = $book_id AND available_copies < total_copies");
+}
+
 
     if ($ok1 && $ok2) {
         echo "<p style='color:blue;'>Kitap iade alındı ve tekrar müsait.</p>";
@@ -128,7 +132,7 @@ if (isset($_POST['delete_id'])) {
     <link rel="stylesheet" href="styles.css">
     <meta charset="UTF-8">
     <title>Admin Panel</title>
-    <link rel="icon" href="assest/images/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
 
 
 </head>

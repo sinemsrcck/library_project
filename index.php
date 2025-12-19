@@ -65,7 +65,7 @@ $conn = db();
   <?php
   // DB'den kitapları çek (hepsini)
   $books = [];
-  $res = $conn->query("SELECT id, title, category, is_available, cover_url FROM books ORDER BY id DESC");
+  $res = $conn->query("SELECT id, title, category, cover_url, total_copies, available_copies FROM books ORDER BY id DESC");
 
 
   if ($res) {

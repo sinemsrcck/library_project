@@ -126,8 +126,12 @@ $cover = (!empty($book["cover_url"])) ? $book["cover_url"] : "book.jpg";
   <p><strong>Category:</strong> <?php echo htmlspecialchars($book["category"]); ?></p>
   <p><strong>ISBN:</strong> <?php echo htmlspecialchars($book["isbn"]); ?></p>
 
-  <?php if ($book["is_available"] == 1): ?>
-      <p class="available">Status: Available</p>
+  <?php if ($book["available_copies"] > 0): ?>
+      <p class="available"><strong>Status:</strong> Available</p>
+
+
+  <p><strong>Available Copies:</strong> <?= (int)$book["available_copies"] ?>/<?= (int)$book["total_copies"] ?></p>
+
 
       <?php if ($hasPending): ?>
           <p class="warning">You already requested this book.</p>
@@ -141,7 +145,7 @@ $cover = (!empty($book["cover_url"])) ? $book["cover_url"] : "book.jpg";
       <?php endif; ?>
 
   <?php else: ?>
-      <p class="error">Status: Not Available</p>
+      <p class="error"><strong>Status:</strong> Not Available</p>
       <button class="btn btn-disabled" disabled>Borrow</button>
   <?php endif; ?>
 

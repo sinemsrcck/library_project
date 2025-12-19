@@ -41,7 +41,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if ($updBorrow->execute()) {
         // 3. Mark the book as available again
-        $updBook = $conn->prepare("UPDATE books SET is_available = 1 WHERE id = ?");
+        $updBook = $conn->prepare("UPDATE books SET available_copies = available_copies + 1 WHERE id = ? AND available_copies < total_copies");
+
         $updBook->bind_param("i", $book_id);
         $updBook->execute();
 

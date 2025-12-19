@@ -22,7 +22,8 @@ function displayBooks() {
 
 
   filteredBooks.forEach(book => {
-    const statusText = (parseInt(book.is_available) === 1) ? "Available" : "Not available";
+    const statusText = (parseInt(book.available_copies) > 0) ? "Available" : "Not available";
+
    
     console.log(book.cover_url);
     const img = book.cover_url
@@ -37,6 +38,8 @@ function displayBooks() {
         <h4>${book.title}</h4>
         <p>${book.category}</p>
         <p>${statusText}</p>
+        <p> Available: ${book.available_copies} / ${book.total_copies}</p>
+
         <a href="book_detail.php?id=${book.id}" class="btn btn-primary">Details</a>
       </div>
     `;
