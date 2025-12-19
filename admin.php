@@ -1,12 +1,14 @@
 <?php
 session_start();
+require_once "db.php";
+$conn = db();
+
+
 
 if (empty($_SESSION["is_admin"])) {
   header("Location: login.php");
   exit;
 }
-require_once "db.php";
-$conn = db();
 
 
 

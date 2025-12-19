@@ -1,14 +1,10 @@
+
+
 <?php
 session_start();
 
-if (empty($_SESSION["is_admin"])) {
-  header("Location: login.php");
-  exit;
-}
 require_once "db.php";
 $conn = db();
-
-
 
 ?>
 <?php
@@ -17,9 +13,6 @@ $conn = db();
 
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
-
-require_once "db.php";
-$conn = db();
 
 // --- settings ---
 $ISBN_FILE = __DIR__ . "/isbns.txt";
@@ -32,11 +25,15 @@ if (!file_exists($ISBN_FILE)) {
 
 $raw = file($ISBN_FILE, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 $isbns = [];
+
 foreach ($raw as $line) {
   $isbn = preg_replace('/[^0-9Xx]/', '', trim($line));
   if ($isbn !== "") $isbns[] = strtoupper($isbn);
 }
-$isbns = array_values(array_unique($isbns));
+//$isbns = array_values(array_unique($isbns));
+// --- DEBUG: kaç satır, kaç benzersiz? ---
+$lineCount = count($isbns);
+$uniqueCount = count(array_unique($isbns));
 
 if (count($isbns) === 0) die("No ISBNs found in isbns.txt");
 
@@ -49,13 +46,13 @@ try {
 
 // Prepare insert (avoid duplicates by isbn)
 $ins = $conn->prepare("
-  INSERT INTO books (title, author, category, year, isbn, cover_url, is_available)
-  VALUES (?, ?, ?, ?, ?, ?, 1)
+  INSERT INTO books
+    (title, author, category, year, isbn, cover_url, is_available, total_copies, available_copies)
+  VALUES
+    (?, ?, ?, ?, ?, ?, 1, ?, ?)
 ");
 
-// Optional: if you have UNIQUE on isbn, you can use INSERT IGNORE
-// or ON DUPLICATE KEY UPDATE. We'll do manual check:
-$check = $conn->prepare("SELECT id FROM books WHERE isbn = ? LIMIT 1");
+
 
 function http_get_json($url) {
   // Use curl if available; fallback to file_get_contents
@@ -124,15 +121,6 @@ for ($i=0; $i<$total; $i += $BATCH_SIZE) {
   }
 
   foreach ($chunk as $isbn) {
-    // skip if exists
-    $check->bind_param("s", $isbn);
-    $check->execute();
-    $r = $check->get_result();
-    if ($r && $r->num_rows > 0) {
-      $skipped++;
-      echo "SKIP (exists): $isbn\n";
-      continue;
-    }
 
     $k = "ISBN:" . $isbn;
     $book = $data[$k] ?? null;
@@ -160,36 +148,41 @@ for ($i=0; $i<$total; $i += $BATCH_SIZE) {
       continue;
     }
 
-   // 🔹 aynı ISBN’den 1–3 kopya ekle
-$copies = rand(1, 3);
+ // === HYBRID COPY POLICY (PROFESSIONAL) ===
+$cat = strtolower($category);
 
-for ($c = 1; $c <= $copies; $c++) {
-
-  $title_copy = ($copies > 1)
-    ? $title . " (Copy $c)"
-    : $title;
-
-  // Bind: title, author, category, year, isbn, cover_url
-  $ins->bind_param(
-    "sssiss",
-    $title_copy,
-    $author,
-    $category,
-    $year,
-    $isbn,
-    $cover_url
-  );
-
-  try {
-    $ins->execute();
-    $inserted++;
-    echo "OK: $isbn | $title_copy | $author | $year | $category\n";
-  } catch (Throwable $e) {
-    $failed++;
-    echo "DB FAIL: $isbn | " . $e->getMessage() . "\n";
-  }
+if (in_array($cat, ['science', 'programming', 'computer'])) {
+    $totalCopies = rand(2, 5);
+} elseif (mt_rand() / mt_getrandmax() < 0.25) {
+    $totalCopies = rand(2, 3);
+} else {
+    $totalCopies = 1;
 }
 
+$availableCopies = $totalCopies;
+
+// 1) Bu ISBN’den şu an DB’de kaç tane var?
+$ins->bind_param(
+  "sssissii",
+  $title,
+  $author,
+  $category,
+  $year,
+  $isbn,
+  $cover_url,
+  $totalCopies,
+  $availableCopies
+);
+
+try {
+  $ins->execute();
+  $inserted++;
+  echo "OK: $isbn | $title | copies=$totalCopies\n";
+} catch (Throwable $e) {
+  $failed++;
+  echo "DB FAIL: $isbn | " . $e->getMessage() . "\n";
+  echo "MYSQL ERRNO: {$conn->errno} | MYSQL ERROR: {$conn->error}\n";
+}
   }
 
   usleep($SLEEP_MS * 1000);
@@ -201,6 +194,9 @@ echo "Skipped:  $skipped\n";
 echo "Failed:   $failed\n";
 echo "</pre>";
 
+
+
 $ins->close();
-$check->close();
 $conn->close();
+
+$existing = (int)$existing;

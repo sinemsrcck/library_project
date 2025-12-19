@@ -9,7 +9,6 @@ if ($user_id === 0) {
   header("Location: login.php");
   exit;
 }
-
 // Book ID
 $book_id = isset($_GET["id"]) ? (int)$_GET["id"] : 0;
 
