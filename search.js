@@ -7,19 +7,30 @@ const bookList = document.getElementById("bookList");
 function displayBooks() {
   bookList.innerHTML = "";
 
+  const q = (searchInput.value || "").toLowerCase().trim();
+  const cat = (categorySelect.value || "all").toLowerCase();
+
   const filteredBooks = books.filter(book => {
-    const searchMatch = (book.title || "").toLowerCase().includes(searchInput.value.toLowerCase());
-    const categoryMatch =
-      categorySelect.value === "all" ||
-      (book.category || "").toLowerCase() === categorySelect.value.toLowerCase();
+    const title = (book.title || "").toLowerCase();
+    const category = (book.category || "").toLowerCase();
+
+    const searchMatch = title.includes(q);
+    const categoryMatch = (cat === "all") || (category === cat);
+
     return searchMatch && categoryMatch;
   });
+console.log(book.cover_url);
 
   filteredBooks.forEach(book => {
     const statusText = (parseInt(book.is_available) === 1) ? "Available" : "Not available";
 
+    const img = book.cover_url
+      ? `<img src="${book.cover_url}" alt="Book cover" style="width:100%;border-radius:10px;margin-bottom:8px;">`
+      : "";
+
     bookList.innerHTML += `
       <div class="book-card">
+        ${img}
         <h4>${book.title}</h4>
         <p>${book.category}</p>
         <p>${statusText}</p>
@@ -28,6 +39,7 @@ function displayBooks() {
     `;
   });
 }
+
 
 searchInput.addEventListener("input", displayBooks);
 categorySelect.addEventListener("change", displayBooks);

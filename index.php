@@ -65,7 +65,9 @@ $conn = db();
   <?php
   // DB'den kitapları çek (hepsini)
   $books = [];
-  $res = $conn->query("SELECT id, title, category, is_available FROM books ORDER BY id DESC");
+  $res = $conn->query("SELECT id, title, category, is_available, cover_url FROM books ORDER BY id DESC");
+
+
   if ($res) {
     while ($row = $res->fetch_assoc()) {
       $books[] = $row;
@@ -80,6 +82,7 @@ $conn = db();
   <script>
     // PHP -> JS
     const booksFromDB = <?= json_encode($books, JSON_UNESCAPED_UNICODE); ?>;
+  
   </script>
   <script src="search.js"></script>
 

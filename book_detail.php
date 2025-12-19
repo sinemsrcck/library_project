@@ -115,7 +115,15 @@ echo $message;
 <div class="book-detail">
 
   <!-- STATIK HTML TASARIM + DINAMIK DATA -->
-  <img src="book.jpg" alt="Book Cover">
+  <?php
+$cover = (!empty($book["cover_url"])) ? $book["cover_url"] : "book.jpg";
+?>
+<img 
+  src="<?php echo htmlspecialchars($cover); ?>" 
+  alt="Book Cover"
+  style="width:100%; border-radius:10px; background:#f0f0f0; min-height:300px;"
+  loading="eager"
+>
 
   <h2><?php echo htmlspecialchars($book["title"]); ?></h2>
 

@@ -58,10 +58,16 @@ if (isset($_POST['add_book'])) {
     $title = $conn->real_escape_string($_POST['title']);
     $author = $conn->real_escape_string($_POST['author']);
     $category = $conn->real_escape_string($_POST['category']);
+    $year = $conn->real_escape_string($_POST['year']);
     $isbn = $conn->real_escape_string($_POST['isbn']);
 
-    $query = "INSERT INTO books (title, author, category, isbn, is_available)
-              VALUES ('$title', '$author', '$category', '$isbn', 1)";
+   $cover_url = $conn->real_escape_string($_POST['cover_url'] ?? '');
+
+    $year = (int)($_POST['year'] ?? 0);
+    $query = "INSERT INTO books (title, author, category, year, isbn, cover_url, is_available)
+            VALUES ('$title', '$author', '$category', $year, '$isbn', '$cover_url', 1)";
+
+
 
     $result = $conn->query($query);
 
@@ -157,9 +163,9 @@ if (isset($_POST['delete_id'])) {
     <input type="text" name="author" id="author" placeholder="Yazar" required><br>
 
     <input type="text" name="category" id="category" placeholder="Kategori">
-
+    <input type="number" name="year" id="year" placeholder="Year">
     <input type="text" name="isbn" id="isbn" placeholder="ISBN">
-
+    <input type="hidden" name="cover_url" id="cover_url">
     <button type="submit" name="add_book" class="btn btn-primary">
         Kitap Ekle
     </button>
@@ -367,6 +373,12 @@ searchInput.addEventListener("input", async () => {
         document.getElementById("author").value = author;
         document.getElementById("category").value = category;
         document.getElementById("isbn").value = isbn;
+        
+        const coverUrl = isbn ? `https://covers.openlibrary.org/b/isbn/${isbn}-L.jpg` : "";
+        document.getElementById("cover_url").value = coverUrl;
+
+        const year = info.publishedDate ? parseInt(info.publishedDate.slice(0,4)) : "";
+        document.getElementById("year").value = year;
 
         resultsDiv.style.display = "none";
         searchInput.value = "";
@@ -384,4 +396,4 @@ searchInput.addEventListener("input", async () => {
 
 </body>
 </html>
- kodum doğru mu 
+ 
