@@ -3,11 +3,13 @@ session_start();
 require_once "db.php";
 $conn = db();
 
-$user_id = $_SESSION["user_id"] ?? 0;
+$user_id = $_SESSION["user_id"] ?? $_SESSION["admin_id"] ?? 0;
+
 if ($user_id === 0) {
   header("Location: login.php");
   exit;
 }
+
 // Book ID
 $book_id = isset($_GET["id"]) ? (int)$_GET["id"] : 0;
 
