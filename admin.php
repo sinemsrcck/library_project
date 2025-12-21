@@ -175,7 +175,10 @@ if (isset($_POST['delete_id'])) {
     <h3>Kitap Ekle</h3>
    <!-- 🔍 Google’dan Kitap Ara -->
     
+<div class="book-search-box">
     <input type="text" id="bookSearch" placeholder="Kitap adı yaz..." autocomplete="off">
+</div>
+
 
     <div id="bookResults" style="
         border:1px solid #ccc;
