@@ -17,9 +17,6 @@ if ($book_id <= 0) {
   exit;
 }
 
-
-
-
 $message = "";
 
 // Get book

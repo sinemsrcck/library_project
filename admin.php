@@ -59,26 +59,42 @@ if (isset($_POST['reject_id'])) {
 
 // --- Kitap Ekleme İşlemi ---
 if (isset($_POST['add_book'])) {
-    $title = $conn->real_escape_string($_POST['title']);
-    $author = $conn->real_escape_string($_POST['author']);
-    $category = $conn->real_escape_string($_POST['category']);
-    $year = $conn->real_escape_string($_POST['year']);
-    $isbn = $conn->real_escape_string($_POST['isbn']);
+    $errors = []; // Hata listesi başlat
 
-   $cover_url = $conn->real_escape_string($_POST['cover_url'] ?? '');
-
+    // Verileri güvenli şekilde al
+    $title = $conn->real_escape_string(trim($_POST['title'] ?? ''));
+    $author = $conn->real_escape_string(trim($_POST['author'] ?? ''));
+    $category = $conn->real_escape_string(trim($_POST['category'] ?? ''));
     $year = (int)($_POST['year'] ?? 0);
-    $query = "INSERT INTO books (title, author, category, year, isbn, cover_url, available_copies)
-            VALUES ('$title', '$author', '$category', $year, '$isbn', '$cover_url', 1, 1)";
+    $isbn = $conn->real_escape_string(trim($_POST['isbn'] ?? ''));
+    $cover_url = $conn->real_escape_string(trim($_POST['cover_url'] ?? ''));
 
+    // Gerekli alanlar kontrolü
+    if (empty($title) || empty($author) || empty($category)) {
+        $errors[] = "Başlık, yazar ve kategori boş olamaz.";
+    }
 
+    // ISBN boşsa hata ver
+    if (empty($isbn)) {
+        $errors[] = "ISBN alanı boş olamaz.";
+    }
 
-    $result = $conn->query($query);
+    // Hata yoksa veritabanına ekle
+    if (empty($errors)) {
+        $query = "INSERT INTO books (title, author, category, year, isbn, cover_url, total_copies, available_copies)
+                  VALUES ('$title', '$author', '$category', $year, '$isbn', '$cover_url', 1, 1)";
+        $result = $conn->query($query);
 
-    if ($result) {
-        echo "<p style='color:green;'>Kitap başarıyla eklendi!</p>";
+        if ($result) {
+            echo "<p style='color:green;'>Kitap başarıyla eklendi.</p>";
+        } else {
+            echo "<p style='color:red;'>Hata oluştu: " . $conn->error . "</p>";
+        }
     } else {
-        echo "<p style='color:red;'>Hata oluştu: " . $conn->error . "</p>";
+        // Hataları yazdır
+        foreach ($errors as $error) {
+            echo "<p style='color:red;'>$error</p>";
+        }
     }
 }
 // --- İade Alma İşlemi ---
@@ -177,11 +193,12 @@ if (isset($_POST['delete_id'])) {
 
     <input type="text" name="category" id="category" placeholder="Kategori">
     <input type="number" name="year" id="year" placeholder="Year">
-    <input type="text" name="isbn" id="isbn" placeholder="ISBN">
+    <input type="text" name="isbn" id="isbn" placeholder="ISBN" class="form-control" required>
     <input type="hidden" name="cover_url" id="cover_url">
     <button type="submit" name="add_book" class="btn btn-primary">
         Kitap Ekle
-    </button>
+</button>
+
 </form>
     </div>
 
@@ -193,19 +210,23 @@ if (isset($_POST['delete_id'])) {
   $result = $conn->query("SELECT * FROM books");
 
   if ($result && $result->num_rows > 0) {
-      echo "<table>
+       echo "<table id='books-table'>
               <tr>
-                <th>ID</th>
+                <th>#</th>
                 <th>Title</th>
                 <th>Author</th>
                 <th>Category</th>
                 <th>Action</th>
               </tr>";
 
+              $counter = 1;
       while ($row = $result->fetch_assoc()) {
            $id = (int)$row['id'];
-          echo "<tr>
-                  <td>{$id}</td>
+
+           $rowClass = $counter > 5 ? "class='book-row hidden'" : "";
+
+          echo "<tr {$rowClass}>
+                  <td>{$counter}</td>
                   <td>" . htmlspecialchars($row['title']) . "</td>
                   <td>" . htmlspecialchars($row['author']) . "</td>
                   <td>" . htmlspecialchars($row['category']) . "</td>
@@ -219,12 +240,19 @@ if (isset($_POST['delete_id'])) {
                     </form>
                   </td>
                 </tr>";
+                $counter++;
       }
 
-      echo "</table>";
-  } else {
-      echo "<p>Henüz kitap yok.</p>";
-  }
+       echo "</table>"; 
+
+   if ($counter > 5) {
+        echo "<button id='toggleBooks' class='btn btn-secondary' style='margin-top:10px;'>Daha Fazla Göster</button>";
+    }
+    echo "<div style='margin-bottom: 40px;'></div>";
+} else {
+    echo "<p>Henüz kitap yok.</p>";
+}
+
   ?>
 </div>
 
@@ -406,7 +434,27 @@ searchInput.addEventListener("input", async () => {
   }
 });
 </script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const toggleBtn = document.getElementById("toggleBooks");
+  if (!toggleBtn) return;
 
+  let expanded = false;
+  toggleBtn.addEventListener("click", function () {
+    const hiddenRows = document.querySelectorAll(".book-row.hidden");
+
+    if (!expanded) {
+      hiddenRows.forEach(row => row.style.display = "table-row");
+      toggleBtn.textContent = "Daha Az Göster";
+      expanded = true;
+    } else {
+      hiddenRows.forEach(row => row.style.display = "none");
+      toggleBtn.textContent = "Daha Fazla Göster";
+      expanded = false;
+    }
+  });
+});
+</script>
 </body>
 </html>
  

@@ -1,5 +1,4 @@
 async function loadDashboard() {
-  // !!! burada dosya adın neyse onu yazmalı
   const r = await fetch("dashboard_data.php");
   if (!r.ok) return;
 
