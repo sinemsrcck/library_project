@@ -173,10 +173,11 @@ if (isset($_POST['delete_id'])) {
     <!-- Kart 1: Kitap Ekle -->
     <div class="navbar">
     <h3>Kitap Ekle</h3>
-   <!-- 🔍 Google’dan Kitap Ara -->
+   
     
 <div class="book-search-box">
-    <input type="text" id="bookSearch" placeholder="Kitap adı yaz..." autocomplete="off">
+    <input type="text" id="bookSearch" class="bookSearchInput" placeholder="Kitap adı yaz..." autocomplete="off">
+
 </div>
 
 
