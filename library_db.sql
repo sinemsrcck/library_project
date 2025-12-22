@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Anamakine: 127.0.0.1:3307
--- Üretim Zamanı: 19 Ara 2025, 15:16:17
+-- Üretim Zamanı: 22 Ara 2025, 21:13:34
 -- Sunucu sürümü: 10.4.32-MariaDB
 -- PHP Sürümü: 8.0.30
 
@@ -193,7 +193,9 @@ INSERT INTO `books` (`id`, `title`, `author`, `category`, `year`, `isbn`, `is_av
 (214, 'The New Machiavelli (Penguin Classics)', 'H. G. Wells', 'novel', 2006, '9780141439990', 1, 'https://covers.openlibrary.org/b/isbn/9780141439990-M.jpg', 4, 4),
 (215, 'JANE EYRE; ED. BY STEVIE DAVIES.', 'Charlotte Brontë', 'novel', 2006, '9780141441146', 1, 'https://covers.openlibrary.org/b/isbn/9780141441146-M.jpg', 4, 4),
 (216, 'Emma', 'Jane Austen', 'general', 2015, '9780141439587', 1, 'https://covers.openlibrary.org/b/isbn/9780141439587-M.jpg', 4, 4),
-(217, 'Caleb Williams (Penguin Classics)', 'William Godwin', 'novel', 2005, '9780141441238', 1, 'https://covers.openlibrary.org/b/isbn/9780141441238-M.jpg', 4, 4);
+(217, 'Caleb Williams (Penguin Classics)', 'William Godwin', 'novel', 2005, '9780141441238', 1, 'https://covers.openlibrary.org/b/isbn/9780141441238-M.jpg', 4, 4),
+(1254, 'Fairy Tales and Feminism', 'Donald Haase', 'Literary Criticism', 2004, '9780814330302', 1, 'https://covers.openlibrary.org/b/isbn/9780814330302-L.jpg', 1, 1),
+(1260, 'Mai ve Siyah (Günümüz Türkçesiyle)', 'Halid Ziya Uşaklıgil', 'Antiques & Collectibles', 2022, '9789750743689', 1, 'https://covers.openlibrary.org/b/isbn/9789750743689-L.jpg', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -210,6 +212,20 @@ CREATE TABLE `borrowings` (
   `return_date` date DEFAULT NULL,
   `status` enum('pending','approved','rejected','returned') DEFAULT 'pending'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Tablo döküm verisi `borrowings`
+--
+
+INSERT INTO `borrowings` (`id`, `user_id`, `book_id`, `borrow_date`, `due_date`, `return_date`, `status`) VALUES
+(2, 2, 217, '2025-12-21', '2025-12-31', NULL, 'returned'),
+(3, 2, 215, '2025-12-21', '2025-12-31', NULL, 'returned'),
+(4, 2, 216, '2025-12-21', '2025-12-31', NULL, 'returned'),
+(5, 3, 216, '2025-12-21', '2025-12-31', NULL, 'returned'),
+(6, 3, 188, '2025-12-21', '2025-12-31', NULL, 'returned'),
+(7, 3, 213, '2025-12-21', '2025-12-31', NULL, 'rejected'),
+(8, 3, 156, '2025-12-21', '2025-12-31', NULL, 'returned'),
+(9, 2, 217, '2025-12-22', '2026-01-01', '2025-12-22', 'returned');
 
 -- --------------------------------------------------------
 
@@ -230,7 +246,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `fullname`, `email`, `password`, `role`) VALUES
-(2, 'Sinem', 's@gmail.com', '$2y$10$mbiUpcR23QLJmsdMMAOXne5J5CI4mekZP9zAi.dwdcN80nZT0fhpm', 'user'),
+(2, 'Sinem', 's@gmail.com', '$2y$10$pfQXfxPqes4wYkDhHZBAyOvXCUBATrsFla0.y5P30x/OKEFmpXwxO', 'user'),
 (3, 'Admin', 'admin@gmail.com', '$2y$10$NZPjM.z2SphcrSfARImyWuLszD8vivMuBHGnM2h4BKlwcb767nAH2', 'admin'),
 (4, 'Gizem', 'g@gmail.com', '$2y$10$ppSsJYUTUSp9G1C1OE2eY.SMagWmYzFUj2VgdRf0tMSc4DTRo8p9e', 'user'),
 (5, 'irem', 'irem@gmail.com', '$2y$10$8ODXdaMy9sfyIbpblnDzZej7I57sPRBFNN0inJm5EKXNkSoudwGLi', 'user');
@@ -269,13 +285,13 @@ ALTER TABLE `users`
 -- Tablo için AUTO_INCREMENT değeri `books`
 --
 ALTER TABLE `books`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1249;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1261;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `borrowings`
 --
 ALTER TABLE `borrowings`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `users`
