@@ -715,6 +715,9 @@ tr:hover td {
 }
 
 
+.book-row.hidden {
+  display: none;
+}
 
 
 
