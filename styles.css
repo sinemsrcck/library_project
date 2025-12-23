@@ -362,11 +362,11 @@ tr:hover td {
 .theme-library .navbar {
   background: #fff;
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-  border-radius: 0 0 16px 16px;
-  padding: 10px 20px;
-  max-width: 1000px;
+  border-radius: 0;
+  padding: 12px 0px;
+  width: 100%;
   /* Slightly wider for new layout */
-  margin: 0px auto 40px ;
+  margin: 0px;
   box-shadow: 0 2px 20px rgba(0, 0, 0, 0.03);
   display: flex;
   justify-content: space-between;
@@ -383,9 +383,9 @@ tr:hover td {
 
 .theme-library .navbar .nav-links {
   display: flex;
-  gap: 10px;
   justify-content: center;
-  flex-grow: 1;
+  gap: clamp(8px, 3vw, 32px);
+
   /* Allows it to take up space and centering */
 }
 
