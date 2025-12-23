@@ -361,7 +361,7 @@ tr:hover td {
 /* sadece navbar için ayrı görünüm */
 .theme-library .navbar {
   background: #cdc4afed;
-  border-bottom: 1px solid rgba(249, 193, 193, 0.919);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.919);
   border-radius: 0;
   padding: 12px 0px;
   width: 100%;
