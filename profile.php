@@ -14,19 +14,19 @@ $msg = "";
 $msgType = "";
 
 // Handle Password Change
-if (isset($_POST['change_password'])) {
-    $current_pass = $_POST['current_password'] ?? '';
-    $new_pass = $_POST['new_password'] ?? '';
-    $confirm_pass = $_POST['confirm_password'] ?? '';
+if (isset($_POST['change_password'])) {//Butona bastım mı?
+    $current_pass = $_POST['current_password'] ?? '';//mevcut
+    $new_pass = $_POST['new_password'] ?? '';//yeni
+    $confirm_pass = $_POST['confirm_password'] ?? '';//yeni tekrar
 
-    // Verify current password
+     // Mevcut şifreyi aldım.
     $stmt = $conn->prepare("SELECT password FROM users WHERE id = ?");
     $stmt->bind_param("i", $user_id);
     $stmt->execute();
     $res = $stmt->get_result();
     $row = $res->fetch_assoc();
 
-    if ($row && password_verify($current_pass, $row['password'])) {
+    if ($row && password_verify($current_pass, $row['password'])) {//Mevcut şifre doğru mu ?
         if ($new_pass === $confirm_pass && !empty($new_pass)) {
             $new_hash = password_hash($new_pass, PASSWORD_DEFAULT);
             $upd = $conn->prepare("UPDATE users SET password = ? WHERE id = ?");
@@ -48,11 +48,11 @@ if (isset($_POST['change_password'])) {
     }
 }
 
-// Fetch User Info
+// // Kullanıcı bilgisi aldım
 $stmt = $conn->prepare("SELECT fullname, email, role FROM users WHERE id = ?");
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
-$user = $stmt->get_result()->fetch_assoc();
+$user = $stmt->get_result()->fetch_assoc(); //sorguyu çalıştır → sonucu al → diziye çevir.
 
 $is_admin = ($user['role'] === 'admin');
 ?>

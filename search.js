@@ -1,27 +1,27 @@
-const books = (typeof booksFromDB !== "undefined") ? booksFromDB : [];
+const books = (typeof booksFromDB !== "undefined") ? booksFromDB : [];//kitaplar nerden?
 
-const searchInput = document.getElementById("searchInput");
-const categorySelect = document.getElementById("categorySelect");
-const bookList = document.getElementById("bookList");
+const searchInput = document.getElementById("searchInput");//Arama 
+const categorySelect = document.getElementById("categorySelect");//Kategori
+const bookList = document.getElementById("bookList");//Lİste
 
 function displayBooks() {
   bookList.innerHTML = "";
 
-  const q = (searchInput.value || "").toLowerCase().trim();
+  const q = (searchInput.value || "").toLowerCase().trim();//Büyük küçük önemsiz.
   const cat = (categorySelect.value || "all").toLowerCase();
 
-  const filteredBooks = books.filter(book => {
+  const filteredBooks = books.filter(book => { // Her kitap için filtreleme.
     const title = (book.title || "").toLowerCase();
     const category = (book.category || "").toLowerCase();
 
     const searchMatch = title.includes(q);
-    const categoryMatch = (cat === "all") || (category === cat);
+    const categoryMatch = (cat === "all") || (category === cat);//cat=seçilen kategori.
 
     return searchMatch && categoryMatch;
   });
 
 
-  filteredBooks.forEach(book => {
+  filteredBooks.forEach(book => { // Filtrenenleri bastır.
     const statusText = (parseInt(book.available_copies) > 0) ? "Available" : "Not available";
 
    
@@ -29,7 +29,7 @@ function displayBooks() {
     const img = book.cover_url
   ? `<img class="book-cover" src="${book.cover_url}" alt="Book cover"
       onerror="this.style.display='none'">`
-  : "";
+  : "";// resim varsa göster yoksa boş bırak.
 
 
     bookList.innerHTML += `
@@ -47,6 +47,6 @@ function displayBooks() {
 }
 
 
-searchInput.addEventListener("input", displayBooks);
-categorySelect.addEventListener("change", displayBooks);
-displayBooks();
+searchInput.addEventListener("input", displayBooks); // Canlı değişim,arama.
+categorySelect.addEventListener("change", displayBooks); //Kategori değişiminde.
+displayBooks();//Sayfa açıldığında hepsinin gösterimi.

@@ -6,9 +6,9 @@ $conn = db();
 
 $errorMessage = "";
 
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
+if ($_SERVER["REQUEST_METHOD"] === "POST") {//Postla çağırdım mı? Butona basıldı mı?
 
-   $loginType = $_POST["login_type"] ?? "user";
+   $loginType = $_POST["login_type"] ?? "user";// Veriler alındı mı?
   $email = trim($_POST["email"] ?? "");
   $password = $_POST["password"] ?? "";
 
@@ -22,10 +22,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $stmt->execute();
     $stmt->store_result();
 
-    if ($stmt->num_rows === 1) {
+    if ($stmt->num_rows === 1) {  //Kayıtlıysa devam.
 
       $stmt->bind_result($id, $fullname, $hashedPassword, $role);
-      $stmt->fetch();
+      $stmt->fetch();//Db den gelen sonucu php değişkenlerine verdim.
 
       if (password_verify($password, $hashedPassword)) {
 
@@ -34,14 +34,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
           $errorMessage = "This account is not an admin.";
         } else {
 
-          if ($role === "admin") {
+          if ($role === "admin") { //Admin girişi
             $_SESSION["is_admin"] = 1;
             $_SESSION["admin_id"] = $id;
             $_SESSION["admin_name"] = $fullname;
             header("Location: admin.php");
             exit;
           } else {
-            unset($_SESSION["is_admin"]);
+            unset($_SESSION["is_admin"]);//User girişi.Admin temizliği.
             $_SESSION["user_id"] = $id;
             $_SESSION["fullname"] = $fullname;
             $_SESSION["email"] = $email;

@@ -1,5 +1,5 @@
 <?php
-session_start();
+session_start();//Bilgileri tutmak için.
 require_once "db.php";
 $conn = db();
 
@@ -8,10 +8,10 @@ $conn = db();
 // ----------------------------
 $errorMessage = "";
 
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
+if ($_SERVER["REQUEST_METHOD"] === "POST") {//Form postla gönderildi mi.Bilgiler geldi mi?
 
     $fullname = trim($_POST["fullname"] ?? "");
-    $email = trim($_POST["email"] ?? "");
+    $email = trim($_POST["email"] ?? "");//Verileri aldım
     $password = $_POST["password"] ?? "";
     $confirmPassword = $_POST["confirmPassword"] ?? "";
 
@@ -22,18 +22,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $conn = db();
 
         // Email kontrol
-        $check = $conn->prepare("SELECT id FROM users WHERE email = ?");
-        $check->bind_param("s", $email);
+        $check = $conn->prepare("SELECT id FROM users WHERE email = ?");//Daha önce mail var mı?
+        $check->bind_param("s", $email); //hangi değişken hangi tür?
         $check->execute();
         $check->store_result();
 
-        if ($check->num_rows > 0) {
+        if ($check->num_rows > 0) {//kayıtlı satır varsa engelledim.
             $errorMessage = "This email is already registered.";
         } else {
 
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-            $stmt = $conn->prepare(
+            $stmt = $conn->prepare( //Yeni eklemek için hazırlandım.
             "INSERT INTO users (fullname, email, password, role) VALUES (?, ?, ?, 'user')"
           );
           $stmt->bind_param("sss", $fullname, $email, $hashedPassword);
@@ -79,7 +79,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
      <a href="login.php">Login</a>
    </p>
 
-    <p id="errorMessage">
+    <p id="errorMessage"><!-- Php den gelen hata.-->
       <?php if ($errorMessage) echo htmlspecialchars($errorMessage); ?>
     </p>
   </form>

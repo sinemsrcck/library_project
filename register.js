@@ -1,12 +1,12 @@
-document.getElementById("registerForm").addEventListener("submit", function(e) {
-  const email = document.getElementById("email").value.trim();
+document.getElementById("registerForm").addEventListener("submit", function(e) { //phpden registerForm bulur, register basıldığında bunu yap.
+  const email = document.getElementById("email").value.trim(); //E mail inputundaki değeri aldırdım.
   const password = document.getElementById("password").value;
   const confirmPassword = document.getElementById("confirmPassword").value;
-  const error = document.getElementById("errorMessage");
+  const error = document.getElementById("errorMessage"); //Hata mesajını aldım.
 
   error.innerText = "";
 
-  if (!email.includes("@")) {
+  if (!email.includes("@")) { //Formu göndermez.
     e.preventDefault();
     error.innerText = "Invalid email address!";
     return;
@@ -24,5 +24,5 @@ document.getElementById("registerForm").addEventListener("submit", function(e) {
     return;
   }
 
-  // ✅ Burada preventDefault YOK -> form PHP'ye gidecek ve DB'ye kayıt atılacak.
+  
 });
