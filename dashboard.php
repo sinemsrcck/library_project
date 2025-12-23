@@ -82,8 +82,8 @@ if ($user_id === 0 && !$is_admin) {
                     $pendingCount = $resPending->fetch_assoc()['c'] ?? 0;
                     ?>
 
-                    <div class="card"
-                        style="flex: 1; min-width: 200px; text-align: center; background: #fffdf8; border: 1px solid #d8cfbf;">
+                    <div class="card" onclick="location.href='index.php'"
+                        style="cursor: pointer; flex: 1; min-width: 200px; text-align: center; background: #fffdf8; border: 1px solid #d8cfbf;">
                         <h2 style="color: #4b2a2a; margin-bottom: 5px;"><?= $totalBooks ?></h2>
                         <p style="margin: 0; color: #666;">Total Books</p>
                     </div>
