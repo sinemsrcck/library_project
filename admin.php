@@ -4,7 +4,7 @@ require_once "db.php";
 $conn = db();
 
 
-
+// admin.php giriş kontrolü
 if (empty($_SESSION["is_admin"])) {
     header("Location: login.php");
     exit;
@@ -31,7 +31,7 @@ if (isset($_POST['approve_id'])) {
         $resBook->close();
 
 
-    // 3) Kitabın available_copies sayısını 1 azalt
+    // 3) Kitabın available_copies/stok sayısını 1 azalt
     $ok2 = true;
     if ($book_id !== null) {
         $ok2 = $conn->query("UPDATE books SET available_copies = available_copies - 1 WHERE id = $book_id AND available_copies > 0");
@@ -114,8 +114,7 @@ if (isset($_POST['return_id'])) {
     // 2) status = returned
     $ok1 = $conn->query("UPDATE borrowings SET status = 'returned' WHERE id = $id");
 
-    // 3) Kitabı tekrar müsait yap
-    // 3) Kitabın available_copies sayısını 1 artır
+    // 3) Kitabı tekrar müsait yap, kitabın available_copies sayısını 1 artır
     $ok2 = true;
     if ($book_id !== null) {
         $ok2 = $conn->query("UPDATE books SET available_copies = available_copies + 1 WHERE id = $book_id AND available_copies < total_copies");
@@ -193,7 +192,7 @@ if (isset($_POST['delete_id'])) {
         <div class="card">
             <h3>Kitap Ekle</h3>
 
-
+         <!-- Google Books API ile kitap araması -->
             <div class="book-search-box">
                 <input type="text" id="bookSearch" class="bookSearchInput" placeholder="Kitap adı yaz..."
                     autocomplete="off">
@@ -202,15 +201,16 @@ if (isset($_POST['delete_id'])) {
 
 
             <div id="bookResults" style="
-        border:1px solid #ccc;
-        border-radius:6px;
-        margin-top:5px;
-        margin-bottom:15px;
-        max-height:200px;
-        overflow:auto;
-        display:none;
-        background:#fff;
-    "></div>
+            border:1px solid #ccc;
+            border-radius:6px;
+            margin-top:5px;
+            margin-bottom:15px;
+            max-height:200px;
+            overflow:auto;
+            display:none;
+            background:#fff;
+            "></div>
+            <!-- Kitap seçilince otomatik doldur -->
             <form action="admin.php" method="post">
                 <input type="text" name="title" id="title" placeholder="Kitap adı" required>
                 <input type="text" name="author" id="author" placeholder="Yazar" required><br>
@@ -268,7 +268,7 @@ if (isset($_POST['delete_id'])) {
                 }
 
                 echo "</table>";
-
+                //Mevcut kitapları daha fazla göster butonu
                 if ($counter > 5) {
                     echo "<button id='toggleBooks' class='btn btn-secondary' style='margin-top:10px;'>Daha Fazla Göster</button>";
                 }

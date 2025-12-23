@@ -2,7 +2,7 @@
 session_start();
 require_once "db.php";
 $conn = db();
-
+// Oturum kontrolü – Giriş yapılmamışsa login sayfasına yönlendir
 $user_id = $_SESSION["user_id"] ?? 0;
 $is_admin = !empty($_SESSION["is_admin"]);
 
@@ -11,9 +11,9 @@ if ($user_id === 0 && !$is_admin) {
     exit;
 }
 
-// Build query depending on role
+// Rol tabanlı SQL sorgusu oluşturma
 if ($is_admin) {
-    // Admin sees ALL history with User names
+    // Admin: Tüm kullanıcıların ödünç alma geçmişini görür
     $query = "
         SELECT br.id, u.fullname as user_name, b.title, b.author, br.borrow_date, br.due_date, br.return_date, br.status
         FROM borrowings br
@@ -22,7 +22,7 @@ if ($is_admin) {
         ORDER BY br.borrow_date DESC
     ";
 } else {
-    // Regular user sees ONLY their history
+     // Normal kullanıcı: Sadece kendi geçmişini görür
     $query = "
         SELECT br.id, b.title, b.author, br.borrow_date, br.due_date, br.return_date, br.status
         FROM borrowings br
@@ -31,7 +31,7 @@ if ($is_admin) {
         ORDER BY br.borrow_date DESC
     ";
 }
-
+// Sorguyu çalıştır
 $result = $conn->query($query);
 if (!$result)
     die("Query failed: " . $conn->error);
@@ -48,14 +48,14 @@ if (!$result)
 </head>
 
 <body class="theme-library">
-
+     <!-- Navbar -->
     <div class="navbar">
-        <!-- Logo Left -->
+        <!-- Sol logo -->
         <a href="index.php">
             <img src="images/logo.png" alt="Logo" class="nav-logo">
         </a>
 
-        <!-- Links Center -->
+          <!-- Orta navigasyon linkleri -->
         <div class="nav-links">
             <a class="btn btn-primary" href="index.php">Home</a>
             <a class="btn btn-primary" href="dashboard.php">Dashboard</a>
@@ -65,9 +65,9 @@ if (!$result)
             <?php endif; ?>
         </div>
 
-        <!-- Actions Right -->
+         <!-- Sağ aksiyonlar -->
         <div class="nav-actions">
-            <!-- Profile Icon -->
+           <!-- Profil ikonu -->
             <a href="profile.php" class="profile-icon-btn" title="My Profile">
                 <svg viewBox="0 0 24 24">
                     <path
@@ -77,10 +77,10 @@ if (!$result)
             <a class="btn btn-danger" href="logout.php">Logout</a>
         </div>
     </div>
-
+    <!-- Ana içerik -->
     <div class="container">
         <h1><?= $is_admin ? "All Borrowing History (Admin View)" : "My Borrowing History" ?></h1>
-
+        <!-- Tablo container (scroll olmasi için) -->
         <div style="overflow-x:auto;">
             <table id="historyTable">
                 <thead>
@@ -113,14 +113,13 @@ if (!$result)
                 </tbody>
             </table>
         </div>
-
+        <!-- Kayıt yoksa mesaj -->
         <?php if ($result->num_rows == 0): ?>
             <p style="text-align:center; padding:20px;">No history records found.</p>
         <?php endif; ?>
     </div>
-
+   <!-- JavaScript: Status hücresine göre renklendirme -->
     <script>
-        // Status colorization
         const rows = document.querySelectorAll('#historyTable tr[data-status]');
         rows.forEach(tr => {
             const status = tr.dataset.status;
@@ -135,6 +134,7 @@ if (!$result)
 
 </html>
 <?php
+// Veritabanı bağlantısını kapat
 $result->close();
 $conn->close();
 ?>

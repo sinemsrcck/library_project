@@ -8,21 +8,21 @@ $conn = db();
 
 ?>
 <?php
-// seed_books_openlibrary.php
-// Reads isbns.txt, fetches metadata from Open Library, inserts into MySQL.
-
+// ----------------------------
+// ISBN Listesini Oku ve İşle
+// ----------------------------
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-// --- settings ---
-$ISBN_FILE = __DIR__ . "/isbns.txt";
-$BATCH_SIZE = 20;            // Open Library API batch size (keep 20-50 safe)
-$SLEEP_MS = 200;             // small delay to be nice to API
+// --- ayarlar ---
+$ISBN_FILE = __DIR__ . "/isbns.txt";// ISBN’lerin bulunduğu dosya
+$BATCH_SIZE = 20;            // API'ye toplu gönderilecek ISBN sayısı
+$SLEEP_MS = 200;              // API'ye aşırı yüklenmemek için bekleme süresi
 
 if (!file_exists($ISBN_FILE)) {
   die("isbns.txt not found at: $ISBN_FILE");
 }
-
+// Dosyayı oku ve ISBN'leri temizle
 $raw = file($ISBN_FILE, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 $isbns = [];
 
@@ -30,21 +30,22 @@ foreach ($raw as $line) {
   $isbn = preg_replace('/[^0-9Xx]/', '', trim($line));
   if ($isbn !== "") $isbns[] = strtoupper($isbn);
 }
-//$isbns = array_values(array_unique($isbns));
-// --- DEBUG: kaç satır, kaç benzersiz? ---
+
+// ---DEBUG: kaç satır, kaç benzersiz? ---
 $lineCount = count($isbns);
 $uniqueCount = count(array_unique($isbns));
 
 if (count($isbns) === 0) die("No ISBNs found in isbns.txt");
 
-// Ensure cover_url exists (safe try)
+// cover_url'nin mevcut olduğundan emin olun 
+// Veritabanında Kapak Alanı Var mı?
 try {
   $conn->query("ALTER TABLE books ADD COLUMN cover_url VARCHAR(500) NULL");
 } catch (Throwable $e) {
-  // ignore if already exists
+  // Zaten varsa yok say
 }
 
-// Prepare insert (avoid duplicates by isbn)
+// Kitap ekleme sorgusu – prepared statement ile güvenli
 $ins = $conn->prepare("
   INSERT INTO books
     (title, author, category, year, isbn, cover_url, is_available, total_copies, available_copies)
@@ -52,10 +53,11 @@ $ins = $conn->prepare("
     (?, ?, ?, ?, ?, ?, 1, ?, ?)
 ");
 
-
-
+// Yardımcı Fonksiyonlar
+ 
+//API çağrısını güvenli şekilde yapan fonksiyon
 function http_get_json($url) {
-  // Use curl if available; fallback to file_get_contents
+  
   if (function_exists("curl_init")) {
     $ch = curl_init($url);
     curl_setopt_array($ch, [
@@ -82,15 +84,15 @@ function http_get_json($url) {
     return $data;
   }
 }
-
+// Yayın yılını yıl formatına çeviren fonksiyon
 function pick_year($publish_date) {
   if (!$publish_date) return 0;
   if (preg_match('/(19|20)\d{2}/', $publish_date, $m)) return (int)$m[0];
   return 0;
 }
-
+// Kategoriyi belirleyen anahtar kelime eşleştirme
 function pick_category($subjects) {
-  // Keep it simple: map to broad categories
+  // geniş kategorilere göre eşleştirin.
   if (!is_array($subjects) || count($subjects) === 0) return "general";
   $name = strtolower($subjects[0]["name"] ?? $subjects[0] ?? "");
   if (str_contains($name, "computer") || str_contains($name, "program")) return "science";
@@ -100,6 +102,7 @@ function pick_category($subjects) {
   return "general";
 }
 
+// Kitapları Toplu Olarak Çek ve Ekle
 $total = count($isbns);
 $inserted = 0; $skipped = 0; $failed = 0;
 
@@ -148,7 +151,8 @@ for ($i=0; $i<$total; $i += $BATCH_SIZE) {
       continue;
     }
 
- // === HYBRID COPY POLICY (PROFESSIONAL) ===
+ // === HİBRİT KOPYA POLİTİKASI ===
+  // Bilimsel kitaplara daha fazla kopya ekle
 $cat = strtolower($category);
 
 if (in_array($cat, ['science', 'programming', 'computer'])) {
@@ -161,7 +165,7 @@ if (in_array($cat, ['science', 'programming', 'computer'])) {
 
 $availableCopies = $totalCopies;
 
-// 1) Bu ISBN’den şu an DB’de kaç tane var?
+// Veritabanına güvenli ekleme
 $ins->bind_param(
   "sssissii",
   $title,
@@ -195,6 +199,7 @@ echo "Failed:   $failed\n";
 echo "</pre>";
 
 
+// Temizlik
 
 $ins->close();
 $conn->close();

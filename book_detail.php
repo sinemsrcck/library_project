@@ -3,15 +3,18 @@ session_start();
 require_once "db.php";
 $conn = db();
 
+// Giriş yapan kullanıcı ID'si alınıyor (admin veya normal kullanıcı olabilir)
 $user_id = $_SESSION["user_id"] ?? $_SESSION["admin_id"] ?? 0;
 
+// Giriş yapılmamışsa login sayfasına yönlendir
 if ($user_id === 0) {
   header("Location: login.php");
   exit;
 }
-// Book ID
+// URL'den gelen kitap ID'si alınır
 $book_id = isset($_GET["id"]) ? (int) $_GET["id"] : 0;
 
+// Kitap ID geçerli değilse anasayfaya yönlendir
 if ($book_id <= 0) {
   header("Location: index.php");
   exit;
@@ -19,12 +22,12 @@ if ($book_id <= 0) {
 
 $message = "";
 
-// Get book
+// Kitap bilgisi veritabanından çekilir
 $query = "SELECT * FROM books WHERE id = $book_id";
 $result = $conn->query($query);
 $book = $result ? $result->fetch_assoc() : null;
 
-// Check pending request
+// Kullanıcının bu kitap için önceden yaptığı istek kontrol edilir
 $hasPending = false;
 if ($book) {
   $checkQ = "SELECT id FROM borrowings 
@@ -40,7 +43,7 @@ if ($book) {
     $checkR->close();
 }
 
-// Borrow action (PRG pattern)
+// Kitap ödünç alma isteği (POST ile gönderildiyse çalışır)
 if ($book && isset($_POST["borrow"])) {
 
   if ($book["is_available"] != 1) {
@@ -48,14 +51,17 @@ if ($book && isset($_POST["borrow"])) {
   } elseif ($hasPending) {
     $message = "<p class='warning'>You already have a pending request for this book.</p>";
   } else {
-
+    // Ödünç alma tarihi bugün, teslim tarihi 10 gün sonrası
     $borrow_date = date("Y-m-d");
     $due_date = date("Y-m-d", strtotime("+10 days"));
 
+    
+    // Veritabanına yeni istek eklenir (durum: pending)
     $ins = "INSERT INTO borrowings (user_id, book_id, borrow_date, due_date, status)
                 VALUES ($user_id, $book_id, '$borrow_date', '$due_date', 'pending')";
 
     if ($conn->query($ins)) {
+      // Başarılıysa mesaj kaydedilir ve sayfa yenilenir (PRG pattern)
       $_SESSION["msg"] = "<p class='success'>
                 Request sent! It will be active after admin approval.
             </p>";
@@ -123,23 +129,25 @@ if ($book && isset($_POST["borrow"])) {
     // Inline message
     echo $message;
     ?>
-
+  <!-- Kitap bilgisi başarılıysa -->
     <?php if ($book): ?>
       <div class="book-detail">
 
-        <!-- STATIK HTML TASARIM + DINAMIK DATA -->
+         <!-- Kapak resmi varsa gösterilir, yoksa default görsel -->
         <?php
         $cover = (!empty($book["cover_url"])) ? $book["cover_url"] : "book.jpg";
         ?>
         <img src="<?php echo htmlspecialchars($cover); ?>" alt="Book Cover"
           style="width:100%; border-radius:10px; background:#f0f0f0; min-height:300px;" loading="eager">
 
+          <!-- Kitap bilgileri -->
         <h2><?php echo htmlspecialchars($book["title"]); ?></h2>
 
         <p><strong>Author:</strong> <?php echo htmlspecialchars($book["author"]); ?></p>
         <p><strong>Category:</strong> <?php echo htmlspecialchars($book["category"]); ?></p>
         <p><strong>ISBN:</strong> <?php echo htmlspecialchars($book["isbn"]); ?></p>
 
+          <!-- Durum uygun ise kullanıcıya buton göster -->
         <?php if ($book["available_copies"] > 0): ?>
           <p class="available"><strong>Status:</strong> Available</p>
 
@@ -147,7 +155,7 @@ if ($book && isset($_POST["borrow"])) {
           <p><strong>Available Copies:</strong> <?= (int) $book["available_copies"] ?>/<?= (int) $book["total_copies"] ?>
           </p>
 
-
+          <!-- Daha önce istek yapıldıysa buton disabled -->
           <?php if ($hasPending): ?>
             <p class="warning">You already requested this book.</p>
             <button class="btn btn-disabled" disabled>Borrow</button>
@@ -172,6 +180,7 @@ if ($book && isset($_POST["borrow"])) {
   </div>
 
   <script>
+    // Ödünç alma butonuna basıldığında kullanıcıdan onay alınır
     const form = document.getElementById("borrowForm");
     if (form) {
       form.addEventListener("submit", function (e) {
