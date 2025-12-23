@@ -6,8 +6,8 @@ $conn = db();
 
 
 if (empty($_SESSION["is_admin"])) {
-  header("Location: login.php");
-  exit;
+    header("Location: login.php");
+    exit;
 }
 
 
@@ -16,7 +16,7 @@ if (empty($_SESSION["is_admin"])) {
 <?php
 /// --- Borrow Request Onay İşlemi ---
 if (isset($_POST['approve_id'])) {
-    $id = (int)$_POST['approve_id'];
+    $id = (int) $_POST['approve_id'];
 
     // 1) status = approved
     $ok1 = $conn->query("UPDATE borrowings SET status = 'approved' WHERE id = $id");
@@ -25,16 +25,17 @@ if (isset($_POST['approve_id'])) {
     $book_id = null;
     $resBook = $conn->query("SELECT book_id FROM borrowings WHERE id = $id");
     if ($resBook && $row = $resBook->fetch_assoc()) {
-        $book_id = (int)$row['book_id'];
+        $book_id = (int) $row['book_id'];
     }
-    if ($resBook) $resBook->close();
+    if ($resBook)
+        $resBook->close();
 
 
     // 3) Kitabın available_copies sayısını 1 azalt
-$ok2 = true;
-if ($book_id !== null) {
-    $ok2 = $conn->query("UPDATE books SET available_copies = available_copies - 1 WHERE id = $book_id AND available_copies > 0");
-}
+    $ok2 = true;
+    if ($book_id !== null) {
+        $ok2 = $conn->query("UPDATE books SET available_copies = available_copies - 1 WHERE id = $book_id AND available_copies > 0");
+    }
 
 
     if ($ok1 && $ok2) {
@@ -46,7 +47,7 @@ if ($book_id !== null) {
 
 
 if (isset($_POST['reject_id'])) {
-    $id = (int)$_POST['reject_id'];
+    $id = (int) $_POST['reject_id'];
 
     $query = "UPDATE borrowings SET status = 'rejected' WHERE id = $id";
     if ($conn->query($query)) {
@@ -65,7 +66,7 @@ if (isset($_POST['add_book'])) {
     $title = $conn->real_escape_string(trim($_POST['title'] ?? ''));
     $author = $conn->real_escape_string(trim($_POST['author'] ?? ''));
     $category = $conn->real_escape_string(trim($_POST['category'] ?? ''));
-    $year = (int)($_POST['year'] ?? 0);
+    $year = (int) ($_POST['year'] ?? 0);
     $isbn = $conn->real_escape_string(trim($_POST['isbn'] ?? ''));
     $cover_url = $conn->real_escape_string(trim($_POST['cover_url'] ?? ''));
 
@@ -99,25 +100,26 @@ if (isset($_POST['add_book'])) {
 }
 // --- İade Alma İşlemi ---
 if (isset($_POST['return_id'])) {
-    $id = (int)$_POST['return_id'];
+    $id = (int) $_POST['return_id'];
 
     // 1) İlgili kitabı bul
     $book_id = null;
     $resBook = $conn->query("SELECT book_id FROM borrowings WHERE id = $id");
     if ($resBook && $row = $resBook->fetch_assoc()) {
-        $book_id = (int)$row['book_id'];
+        $book_id = (int) $row['book_id'];
     }
-    if ($resBook) $resBook->close();
+    if ($resBook)
+        $resBook->close();
 
     // 2) status = returned
     $ok1 = $conn->query("UPDATE borrowings SET status = 'returned' WHERE id = $id");
 
     // 3) Kitabı tekrar müsait yap
     // 3) Kitabın available_copies sayısını 1 artır
-$ok2 = true;
-if ($book_id !== null) {
-    $ok2 = $conn->query("UPDATE books SET available_copies = available_copies + 1 WHERE id = $book_id AND available_copies < total_copies");
-}
+    $ok2 = true;
+    if ($book_id !== null) {
+        $ok2 = $conn->query("UPDATE books SET available_copies = available_copies + 1 WHERE id = $book_id AND available_copies < total_copies");
+    }
 
 
     if ($ok1 && $ok2) {
@@ -129,7 +131,7 @@ if ($book_id !== null) {
 
 // --- Kitap Silme İşlemi ---
 if (isset($_POST['delete_id'])) {
-    $id = (int)$_POST['delete_id'];
+    $id = (int) $_POST['delete_id'];
     $query = "DELETE FROM books WHERE id = $id";
 
     if ($conn->query($query)) {
@@ -144,8 +146,9 @@ if (isset($_POST['delete_id'])) {
 
 <!DOCTYPE html>
 <html>
+
 <head>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=<?php echo time(); ?>">
     <meta charset="UTF-8">
     <title>Admin Panel</title>
     <link rel="icon" href="images/favicon.ico" type="image/x-icon">
@@ -155,33 +158,50 @@ if (isset($_POST['delete_id'])) {
 
 <body class="theme-library">
 
-   <div class="navbar">
-    <!-- Logo Left -->
+    <div class="navbar">
+        <!-- Logo Left -->
         <a href="index.php">
             <img src="images/logo.png" alt="Logo" class="nav-logo">
         </a>
-  <a class="btn btn-primary" href="index.php">Home</a>
-  <a class="btn btn-primary" href="dashboard.php">Dashboard</a>
-  <a class="btn btn-primary" href="history.php">History</a>
-  <a class="btn btn-danger" href="logout.php">Logout</a>
-</div>
 
-<div class="container">
+        <!-- Links Center -->
+        <div class="nav-links">
+            <a class="btn btn-primary" href="index.php">Home</a>
+            <a class="btn btn-primary" href="dashboard.php">Dashboard</a>
+            <a class="btn btn-primary" href="history.php">History</a>
+            <a class="btn btn-primary" href="admin.php">Admin Panel</a>
+        </div>
 
-    <h1>Admin Panel</h1>
+        <!-- Actions Right -->
+        <div class="nav-actions">
+            <!-- Profile Icon -->
+            <a href="profile.php" class="profile-icon-btn" title="My Profile">
+                <svg viewBox="0 0 24 24">
+                    <path
+                        d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                </svg>
+            </a>
+            <a class="btn btn-danger" href="logout.php">Logout</a>
+        </div>
+    </div>
 
-    <!-- Kart 1: Kitap Ekle -->
-    <div class="navbar">
-    <h3>Kitap Ekle</h3>
-   
-    
-<div class="book-search-box">
-    <input type="text" id="bookSearch" class="bookSearchInput" placeholder="Kitap adı yaz..." autocomplete="off">
+    <div class="container">
 
-</div>
+        <h1>Admin Panel</h1>
+
+        <!-- Kart 1: Kitap Ekle -->
+        <div class="card">
+            <h3>Kitap Ekle</h3>
 
 
-    <div id="bookResults" style="
+            <div class="book-search-box">
+                <input type="text" id="bookSearch" class="bookSearchInput" placeholder="Kitap adı yaz..."
+                    autocomplete="off">
+
+            </div>
+
+
+            <div id="bookResults" style="
         border:1px solid #ccc;
         border-radius:6px;
         margin-top:5px;
@@ -191,30 +211,30 @@ if (isset($_POST['delete_id'])) {
         display:none;
         background:#fff;
     "></div>
-     <form action="admin.php" method="post">
-    <input type="text" name="title" id="title" placeholder="Kitap adı" required>
-    <input type="text" name="author" id="author" placeholder="Yazar" required><br>
+            <form action="admin.php" method="post">
+                <input type="text" name="title" id="title" placeholder="Kitap adı" required>
+                <input type="text" name="author" id="author" placeholder="Yazar" required><br>
 
-    <input type="text" name="category" id="category" placeholder="Kategori">
-    <input type="number" name="year" id="year" placeholder="Year">
-    <input type="text" name="isbn" id="isbn" placeholder="ISBN" class="form-control" required>
-    <input type="hidden" name="cover_url" id="cover_url">
-    <button type="submit" name="add_book" class="btn btn-primary">
-        Kitap Ekle
-</button>
+                <input type="text" name="category" id="category" placeholder="Kategori">
+                <input type="number" name="year" id="year" placeholder="Year">
+                <input type="text" name="isbn" id="isbn" placeholder="ISBN" class="form-control" required>
+                <input type="hidden" name="cover_url" id="cover_url">
+                <button type="submit" name="add_book" class="btn btn-primary">
+                    Kitap Ekle
+                </button>
 
-</form>
-    </div>
+            </form>
+        </div>
 
-    <!-- Bölüm 2: Mevcut Kitaplar -->
-    <div class="card">
-  <h3>Mevcut Kitaplar</h3>
+        <!-- Bölüm 2: Mevcut Kitaplar -->
+        <div class="card">
+            <h3>Mevcut Kitaplar</h3>
 
-  <?php
-  $result = $conn->query("SELECT * FROM books");
+            <?php
+            $result = $conn->query("SELECT * FROM books");
 
-  if ($result && $result->num_rows > 0) {
-       echo "<table id='books-table'>
+            if ($result && $result->num_rows > 0) {
+                echo "<table id='books-table'>
               <tr>
                 <th>#</th>
                 <th>Title</th>
@@ -223,13 +243,13 @@ if (isset($_POST['delete_id'])) {
                 <th>Action</th>
               </tr>";
 
-              $counter = 1;
-      while ($row = $result->fetch_assoc()) {
-           $id = (int)$row['id'];
+                $counter = 1;
+                while ($row = $result->fetch_assoc()) {
+                    $id = (int) $row['id'];
 
-           $rowClass = $counter > 5 ? "class='book-row hidden'" : "";
+                    $rowClass = $counter > 5 ? "class='book-row hidden'" : "";
 
-          echo "<tr {$rowClass}>
+                    echo "<tr {$rowClass}>
                   <td>{$counter}</td>
                   <td>" . htmlspecialchars($row['title']) . "</td>
                   <td>" . htmlspecialchars($row['author']) . "</td>
@@ -244,30 +264,30 @@ if (isset($_POST['delete_id'])) {
                     </form>
                   </td>
                 </tr>";
-                $counter++;
-      }
+                    $counter++;
+                }
 
-       echo "</table>"; 
+                echo "</table>";
 
-   if ($counter > 5) {
-        echo "<button id='toggleBooks' class='btn btn-secondary' style='margin-top:10px;'>Daha Fazla Göster</button>";
-    }
-    echo "<div style='margin-bottom: 40px;'></div>";
-} else {
-    echo "<p>Henüz kitap yok.</p>";
-}
+                if ($counter > 5) {
+                    echo "<button id='toggleBooks' class='btn btn-secondary' style='margin-top:10px;'>Daha Fazla Göster</button>";
+                }
+                echo "<div style='margin-bottom: 40px;'></div>";
+            } else {
+                echo "<p>Henüz kitap yok.</p>";
+            }
 
-  ?>
-</div>
+            ?>
+        </div>
 
 
-<!-- Bölüm 3: Ödünç Alma İstekleri -->
-<div class="section">
-    <h3>Bekleyen Ödünç Alma İstekleri</h3>
+        <!-- Bölüm 3: Ödünç Alma İstekleri -->
+        <div class="card">
+            <h3>Bekleyen Ödünç Alma İstekleri</h3>
 
-    <?php
-    // pending borrow request'leri çek
-    $query = "
+            <?php
+            // pending borrow request'leri çek
+            $query = "
         SELECT br.id, u.fullname AS user_name, b.title AS book_title,
                br.borrow_date, br.due_date, br.status
         FROM borrowings br
@@ -276,11 +296,11 @@ if (isset($_POST['delete_id'])) {
         WHERE br.status = 'pending'
         ORDER BY br.borrow_date DESC
     ";
-    $resReq = $conn->query($query);
+            $resReq = $conn->query($query);
 
-    if ($resReq && $resReq->num_rows > 0) {
-        echo "<table>";
-        echo "<tr>
+            if ($resReq && $resReq->num_rows > 0) {
+                echo "<table>";
+                echo "<tr>
                 <th>ID</th>
                 <th>Kullanıcı</th>
                 <th>Kitap</th>
@@ -289,15 +309,15 @@ if (isset($_POST['delete_id'])) {
                 <th>İşlem</th>
               </tr>";
 
-        while ($r = $resReq->fetch_assoc()) {
-            echo "<tr>";
-            echo "<td>{$r['id']}</td>";
-            echo "<td>{$r['user_name']}</td>";
-            echo "<td>{$r['book_title']}</td>";
-            echo "<td>{$r['borrow_date']}</td>";
-            echo "<td>{$r['due_date']}</td>";
+                while ($r = $resReq->fetch_assoc()) {
+                    echo "<tr>";
+                    echo "<td>{$r['id']}</td>";
+                    echo "<td>{$r['user_name']}</td>";
+                    echo "<td>{$r['book_title']}</td>";
+                    echo "<td>{$r['borrow_date']}</td>";
+                    echo "<td>{$r['due_date']}</td>";
 
-            echo "<td>
+                    echo "<td>
                     <form action='admin.php' method='post' style='display:inline-block;'>
                         <input type='hidden' name='approve_id' value='{$r['id']}'>
                         <button type='submit' class='btn-approve'>Onayla</button>
@@ -308,23 +328,24 @@ if (isset($_POST['delete_id'])) {
                     </form>
                   </td>";
 
-            echo "</tr>";
-        }
+                    echo "</tr>";
+                }
 
-        echo "</table>";
-    } else {
-        echo "<p>Şu anda bekleyen ödünç alma isteği yok.</p>";
-    }
+                echo "</table>";
+            } else {
+                echo "<p>Şu anda bekleyen ödünç alma isteği yok.</p>";
+            }
 
-    if ($resReq) $resReq->close();
-    ?>
-</div>
-<!-- Bölüm 4: Onaylanmış ve iade bekleyenler -->
-<div class="section">
-    <h3>Onaylanmış Ödünçler (İade Bekleyenler)</h3>
+            if ($resReq)
+                $resReq->close();
+            ?>
+        </div>
+        <!-- Bölüm 4: Onaylanmış ve iade bekleyenler -->
+        <div class="card">
+            <h3>Onaylanmış Ödünçler (İade Bekleyenler)</h3>
 
-    <?php
-    $qApproved = "
+            <?php
+            $qApproved = "
         SELECT br.id, u.fullname AS user_name, b.title AS book_title,
                br.borrow_date, br.due_date
         FROM borrowings br
@@ -333,11 +354,11 @@ if (isset($_POST['delete_id'])) {
         WHERE br.status = 'approved'
         ORDER BY br.borrow_date DESC
     ";
-    $resApproved = $conn->query($qApproved);
+            $resApproved = $conn->query($qApproved);
 
-    if ($resApproved && $resApproved->num_rows > 0) {
-        echo "<table>";
-        echo "<tr>
+            if ($resApproved && $resApproved->num_rows > 0) {
+                echo "<table>";
+                echo "<tr>
                 <th>ID</th>
                 <th>Kullanıcı</th>
                 <th>Kitap</th>
@@ -346,119 +367,120 @@ if (isset($_POST['delete_id'])) {
                 <th>İşlem</th>
               </tr>";
 
-        while ($r = $resApproved->fetch_assoc()) {
-            echo "<tr>";
-            echo "<td>{$r['id']}</td>";
-            echo "<td>{$r['user_name']}</td>";
-            echo "<td>{$r['book_title']}</td>";
-            echo "<td>{$r['borrow_date']}</td>";
-            echo "<td>{$r['due_date']}</td>";
+                while ($r = $resApproved->fetch_assoc()) {
+                    echo "<tr>";
+                    echo "<td>{$r['id']}</td>";
+                    echo "<td>{$r['user_name']}</td>";
+                    echo "<td>{$r['book_title']}</td>";
+                    echo "<td>{$r['borrow_date']}</td>";
+                    echo "<td>{$r['due_date']}</td>";
 
-            echo "<td>
+                    echo "<td>
                     <form action='admin.php' method='post'>
                         <input type='hidden' name='return_id' value='{$r['id']}'>
                         <button type='submit' class='btn-approve'>İade Al</button>
                     </form>
                   </td>";
-            echo "</tr>";
-        }
+                    echo "</tr>";
+                }
 
-        echo "</table>";
-    } else {
-        echo "<p>İade bekleyen onaylanmış kayıt yok.</p>";
-    }
+                echo "</table>";
+            } else {
+                echo "<p>İade bekleyen onaylanmış kayıt yok.</p>";
+            }
 
-    if ($resApproved) $resApproved->close();
-    ?>
-</div>
-</div>
-<script>
-const searchInput = document.getElementById("bookSearch");
-const resultsDiv = document.getElementById("bookResults");
+            if ($resApproved)
+                $resApproved->close();
+            ?>
+        </div>
+    </div>
+    <script>
+        const searchInput = document.getElementById("bookSearch");
+        const resultsDiv = document.getElementById("bookResults");
 
-searchInput.addEventListener("input", async () => {
-  const q = searchInput.value.trim();
-  if (q.length < 3) {
-    resultsDiv.style.display = "none";
-    return;
-  }
+        searchInput.addEventListener("input", async () => {
+            const q = searchInput.value.trim();
+            if (q.length < 3) {
+                resultsDiv.style.display = "none";
+                return;
+            }
 
-  try {
-    const res = await fetch(
-      `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(q)}&maxResults=6`
-    );
-    const data = await res.json();
+            try {
+                const res = await fetch(
+                    `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(q)}&maxResults=6`
+                );
+                const data = await res.json();
 
-    resultsDiv.innerHTML = "";
-    resultsDiv.style.display = "block";
+                resultsDiv.innerHTML = "";
+                resultsDiv.style.display = "block";
 
-    if (!data.items) {
-      resultsDiv.innerHTML = "<div style='padding:8px;'>Sonuç yok</div>";
-      return;
-    }
+                if (!data.items) {
+                    resultsDiv.innerHTML = "<div style='padding:8px;'>Sonuç yok</div>";
+                    return;
+                }
 
-    data.items.forEach(book => {
-      const info = book.volumeInfo || {};
-      const title = info.title || "";
-      const author = (info.authors || []).join(", ");
-      const category = (info.categories || [""])[0];
-      const isbn =
-        info.industryIdentifiers?.find(i => i.type === "ISBN_13")?.identifier ||
-        info.industryIdentifiers?.find(i => i.type === "ISBN_10")?.identifier ||
-        "";
+                data.items.forEach(book => {
+                    const info = book.volumeInfo || {};
+                    const title = info.title || "";
+                    const author = (info.authors || []).join(", ");
+                    const category = (info.categories || [""])[0];
+                    const isbn =
+                        info.industryIdentifiers?.find(i => i.type === "ISBN_13")?.identifier ||
+                        info.industryIdentifiers?.find(i => i.type === "ISBN_10")?.identifier ||
+                        "";
 
-      const div = document.createElement("div");
-      div.style.padding = "8px";
-      div.style.cursor = "pointer";
-      div.style.borderBottom = "1px solid #eee";
-      div.innerHTML = `<strong>${title}</strong><br><small>${author}</small>`;
+                    const div = document.createElement("div");
+                    div.style.padding = "8px";
+                    div.style.cursor = "pointer";
+                    div.style.borderBottom = "1px solid #eee";
+                    div.innerHTML = `<strong>${title}</strong><br><small>${author}</small>`;
 
-      div.onclick = () => {
-        document.getElementById("title").value = title;
-        document.getElementById("author").value = author;
-        document.getElementById("category").value = category;
-        document.getElementById("isbn").value = isbn;
-        
-        const coverUrl = isbn ? `https://covers.openlibrary.org/b/isbn/${isbn}-L.jpg` : "";
-        document.getElementById("cover_url").value = coverUrl;
+                    div.onclick = () => {
+                        document.getElementById("title").value = title;
+                        document.getElementById("author").value = author;
+                        document.getElementById("category").value = category;
+                        document.getElementById("isbn").value = isbn;
 
-        const year = info.publishedDate ? parseInt(info.publishedDate.slice(0,4)) : "";
-        document.getElementById("year").value = year;
+                        const coverUrl = isbn ? `https://covers.openlibrary.org/b/isbn/${isbn}-L.jpg` : "";
+                        document.getElementById("cover_url").value = coverUrl;
 
-        resultsDiv.style.display = "none";
-        searchInput.value = "";
-      };
+                        const year = info.publishedDate ? parseInt(info.publishedDate.slice(0, 4)) : "";
+                        document.getElementById("year").value = year;
 
-      resultsDiv.appendChild(div);
-    });
+                        resultsDiv.style.display = "none";
+                        searchInput.value = "";
+                    };
 
-  } catch (err) {
-    resultsDiv.innerHTML = "<div style='padding:8px;'>Hata oluştu</div>";
-    resultsDiv.style.display = "block";
-  }
-});
-</script>
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-  const toggleBtn = document.getElementById("toggleBooks");
-  if (!toggleBtn) return;
+                    resultsDiv.appendChild(div);
+                });
 
-  let expanded = false;
-  toggleBtn.addEventListener("click", function () {
-    const hiddenRows = document.querySelectorAll(".book-row.hidden");
+            } catch (err) {
+                resultsDiv.innerHTML = "<div style='padding:8px;'>Hata oluştu</div>";
+                resultsDiv.style.display = "block";
+            }
+        });
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const toggleBtn = document.getElementById("toggleBooks");
+            if (!toggleBtn) return;
 
-    if (!expanded) {
-      hiddenRows.forEach(row => row.style.display = "table-row");
-      toggleBtn.textContent = "Daha Az Göster";
-      expanded = true;
-    } else {
-      hiddenRows.forEach(row => row.style.display = "none");
-      toggleBtn.textContent = "Daha Fazla Göster";
-      expanded = false;
-    }
-  });
-});
-</script>
+            let expanded = false;
+            toggleBtn.addEventListener("click", function () {
+                const hiddenRows = document.querySelectorAll(".book-row.hidden");
+
+                if (!expanded) {
+                    hiddenRows.forEach(row => row.style.display = "table-row");
+                    toggleBtn.textContent = "Daha Az Göster";
+                    expanded = true;
+                } else {
+                    hiddenRows.forEach(row => row.style.display = "none");
+                    toggleBtn.textContent = "Daha Fazla Göster";
+                    expanded = false;
+                }
+            });
+        });
+    </script>
 </body>
+
 </html>
- 

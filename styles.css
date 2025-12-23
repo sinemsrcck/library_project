@@ -360,8 +360,8 @@ tr:hover td {
 
 /* sadece navbar için ayrı görünüm */
 .theme-library .navbar {
-  background: #fff;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  background: #cdc4afed;
+  border-bottom: 1px solid rgba(249, 193, 193, 0.919);
   border-radius: 0;
   padding: 12px 0px;
   width: 100%;
@@ -690,15 +690,18 @@ tr:hover td {
 }
 
 .theme-library .navbar a.btn {
-  background-color: #4b2a2a;   /* istediğin renk */
+  background-color: #4b2a2a;
+  /* istediğin renk */
   color: #f0edea;
   padding: 8px 14px;
   border-radius: 8px;
   margin: 0 4px;
   text-decoration: none;
 }
+
 .theme-library .navbar a.btn:hover {
-  background-color: #e4d9d1;   /* hover rengi */
+  background-color: #e4d9d1;
+  /* hover rengi */
   color: #4b2a2a;
 }
 
@@ -710,7 +713,8 @@ tr:hover td {
 }
 
 .login-top-image img {
-  width: 600px;   /* buradan büyüt/küçült */
+  width: 600px;
+  /* buradan büyüt/küçült */
   height: auto;
 }
 
@@ -718,7 +722,3 @@ tr:hover td {
 .book-row.hidden {
   display: none;
 }
-
-
-
-
