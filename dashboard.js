@@ -1,17 +1,22 @@
+// Load dashboard data asynchronously from backend
 async function loadDashboard() {
   const r = await fetch("dashboard_data.php");
   if (!r.ok) return;
 
+  // Parse JSON response
   const data = await r.json();
+  // Extract active books and due dates (fallback to empty arrays)
   const activeBooks = data.activeBooks || [];
   const dueDates = data.dueDates || [];
 
+  // Get target DOM elements
   const activeBooksDiv = document.getElementById("activeBooksList");
   const dueDatesDiv = document.getElementById("dueDatesList");
 
   activeBooksDiv.innerHTML = "";
   dueDatesDiv.innerHTML = "";
 
+  // Render active borrowed books
   activeBooks.forEach(book => {
     activeBooksDiv.innerHTML += `
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
@@ -34,9 +39,10 @@ async function loadDashboard() {
     const now = new Date();
 
     const ms = due - now;
-    const overdue = ms < 0;
+    const overdue = ms < 0;  // Calculate remaining time in milliseconds
 
     const abs = Math.abs(ms);
+    // Convert milliseconds to days, hours, minutes
     const days = Math.floor(abs / (1000 * 60 * 60 * 24));
     const hours = Math.floor((abs / (1000 * 60 * 60)) % 24);
     const mins = Math.floor((abs / (1000 * 60)) % 60);
@@ -55,6 +61,7 @@ async function loadDashboard() {
     }
 
 
+    // Append due date information to DOM
     dueDatesDiv.innerHTML += `
       <p>
         <strong>${escapeHtml(item.title)}</strong><br>
@@ -73,11 +80,14 @@ async function returnBook(borrowId) {
   if (!confirm("Are you sure you want to return this book?")) return;
 
   try {
+    // Send POST request with borrow ID
     const res = await fetch("return_book.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ borrow_id: borrowId })
     });
+
+    // Parse server response
     const result = await res.json();
     if (result.success) {
       alert("Book returned successfully!");
@@ -91,7 +101,7 @@ async function returnBook(borrowId) {
   }
 }
 
-// basit güvenlik
+// Basic XSS protection by escaping HTML characters
 function escapeHtml(str) {
   return String(str ?? "")
     .replaceAll("&", "&amp;")

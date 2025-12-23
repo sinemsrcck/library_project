@@ -1,9 +1,14 @@
 <?php
+// Start session to access user login data
 session_start();
+
+// Include database connection
 require_once "db.php";
 $conn = db();
 
+// Get user ID from session, default to 0 if not set
 $user_id = $_SESSION["user_id"] ?? 0;
+// Check if logged in user is admin
 $is_admin = !empty($_SESSION["is_admin"]);
 
 // If not logged in as user OR admin, redirect to login
@@ -30,12 +35,12 @@ if ($user_id === 0 && !$is_admin) {
     <body class="theme-library">
 
         <div class="navbar">
-            <!-- Logo Left -->
+            <!-- Logo -->
             <a href="index.php">
                 <img src="images/logo.png" alt="Logo" class="nav-logo">
             </a>
 
-            <!-- Links Center -->
+            <!-- Navigation links -->
             <div class="nav-links">
                 <a class="btn btn-primary" href="index.php">Home</a>
                 <a class="btn btn-primary" href="dashboard.php">Dashboard</a>
@@ -45,7 +50,7 @@ if ($user_id === 0 && !$is_admin) {
                 <?php endif; ?>
             </div>
 
-            <!-- Actions Right -->
+            <!-- User actions -->
             <div class="nav-actions">
                 <!-- Profile Icon -->
                 <a href="profile.php" class="profile-icon-btn" title="My Profile">
