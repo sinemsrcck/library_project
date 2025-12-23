@@ -1,5 +1,7 @@
 <?php
+// Start session to access user and admin information
 session_start();
+// Include database connection
 require_once "db.php";
 $conn = db();
 ?>
@@ -27,6 +29,7 @@ $conn = db();
       <a class="btn btn-primary" href="index.php">Home</a>
       <a class="btn btn-primary" href="dashboard.php">Dashboard</a>
       <a class="btn btn-primary" href="history.php">History</a>
+      <!-- Show Admin link only if user is admin -->
       <?php if (!empty($_SESSION["is_admin"])): ?>
         <a class="btn btn-primary" href="admin.php">Admin</a>
       <?php endif; ?>
@@ -52,7 +55,7 @@ $conn = db();
   <select id="categorySelect">
     <option value="all">All Categories</option>
     <?php
-    // Veritabanındaki gerçek kategorileri çek
+    // Fetch distinct book categories from database
     $catRes = $conn->query("SELECT DISTINCT category FROM books WHERE category IS NOT NULL AND category != '' ORDER BY category");
     if ($catRes) {
       while ($catRow = $catRes->fetch_assoc()) {
@@ -64,11 +67,11 @@ $conn = db();
   </select>
 
   <?php
-  // DB'den kitapları çek (hepsini)
+  // Fetch all books from database
   $books = [];
   $res = $conn->query("SELECT id, title, category, cover_url, total_copies, available_copies FROM books ORDER BY id DESC");
 
-
+  // Store books in array
   if ($res) {
     while ($row = $res->fetch_assoc()) {
       $books[] = $row;
@@ -77,11 +80,12 @@ $conn = db();
   }
   ?>
 
+  <!-- Book list will be rendered here by JavaScript -->
   <div id="bookList"></div>
 
 
   <script>
-    // PHP -> JS
+    // Pass PHP book data to JavaScript as JSON
     const booksFromDB = <?= json_encode($books, JSON_UNESCAPED_UNICODE); ?>;
   
   </script>
