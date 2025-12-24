@@ -1,5 +1,3 @@
-
-
 <?php
 session_start();
 
@@ -26,8 +24,12 @@ if (!file_exists($ISBN_FILE)) {
 $raw = file($ISBN_FILE, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 $isbns = [];
 
+// $raw dizisindeki her bir satırı döngüyle işle
 foreach ($raw as $line) {
+  
   $isbn = preg_replace('/[^0-9Xx]/', '', trim($line));
+
+  // ISBN'yi büyük harfe çevirerek $isbns dizisine ekle
   if ($isbn !== "") $isbns[] = strtoupper($isbn);
 }
 
@@ -56,27 +58,35 @@ $ins = $conn->prepare("
 // Yardımcı Fonksiyonlar
  
 //API çağrısını güvenli şekilde yapan fonksiyon
+// Verilen URL'den JSON veri çeker ve dizi olarak döner
 function http_get_json($url) {
   
   if (function_exists("curl_init")) {
+    // cURL ayarları tanımlanıyor
     $ch = curl_init($url);
     curl_setopt_array($ch, [
-      CURLOPT_RETURNTRANSFER => true,
-      CURLOPT_FOLLOWLOCATION => true,
-      CURLOPT_TIMEOUT => 20,
-      CURLOPT_USERAGENT => "LibraryProjectSeeder/1.0"
+      CURLOPT_RETURNTRANSFER => true,        // Sonuç döndürülsün (ekrana yazma)
+      CURLOPT_FOLLOWLOCATION => true,       // Yönlendirmeleri takip et
+      CURLOPT_TIMEOUT => 20,               // Maksimum 20 saniye bekle
+      CURLOPT_USERAGENT => "LibraryProjectSeeder/1.0" // Kullanıcı tanımı
     ]);
+
+   // API çağrısını yap
     $res = curl_exec($ch);
     $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     $err  = curl_error($ch);
     curl_close($ch);
+
     if ($res === false || $code >= 400) {
       throw new Exception("HTTP error $code $err");
     }
+
+    // JSON veriyi PHP dizisine dönüştür
     $data = json_decode($res, true);
     if (!is_array($data)) throw new Exception("Invalid JSON");
     return $data;
   } else {
+    // Eğer sunucuda cURL yoksa file_get_contents ile veri çek
     $res = @file_get_contents($url);
     if ($res === false) throw new Exception("file_get_contents failed");
     $data = json_decode($res, true);
@@ -109,12 +119,15 @@ $inserted = 0; $skipped = 0; $failed = 0;
 echo "<pre>";
 echo "Total ISBNs: $total\n\n";
 
+// Döngü ile ISBN listesi parça parça (batch halinde) işleniyor
 for ($i=0; $i<$total; $i += $BATCH_SIZE) {
   $chunk = array_slice($isbns, $i, $BATCH_SIZE);
   $keys = array_map(fn($x) => "ISBN:" . $x, $chunk);
 
+  // API URL'si oluşturuluyor – birden fazla ISBN virgülle birleştiriliyor
   $url = "https://openlibrary.org/api/books?bibkeys=" . urlencode(implode(",", $keys)) . "&format=json&jscmd=data";
 
+  // Daha önce tanımlanan güvenli JSON çekme fonksiyonu ile veriler çekilir
   try {
     $data = http_get_json($url);
   } catch (Throwable $e) {
@@ -158,6 +171,7 @@ $cat = strtolower($category);
 if (in_array($cat, ['science', 'programming', 'computer'])) {
     $totalCopies = rand(2, 5);
 } elseif (mt_rand() / mt_getrandmax() < 0.25) {
+  //bu blok yaklaşık %25 ihtimalle çalışır
     $totalCopies = rand(2, 3);
 } else {
     $totalCopies = 1;
@@ -189,6 +203,8 @@ try {
 }
   }
 
+  // API'ye yapılan istekler arasında bekleme süresi ekle
+  // $SLEEP_MS milisaniyeyi mikrosaniyeye çevirip usleep ile durdurur
   usleep($SLEEP_MS * 1000);
 }
 

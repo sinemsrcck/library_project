@@ -42,13 +42,13 @@ if (!$result)
 
 <head>
     <link rel="stylesheet" href="styles.css?v=<?php echo time(); ?>">
-    <meta charset="UTF-8">
+    <meta charset="UTF-8">  <!-- Türkçe karakterlerin doğru görüntülenmesini sağlar -->
     <title>Borrowing History</title>
     <link rel="icon" href="images/favicon.ico" type="image/x-icon">
 </head>
 
 <body class="theme-library">
-     <!-- Navbar -->
+     <!-- Navbar (Navigation Bar) bir web sitesinde sayfalar arasında gezinmeyi sağlar -->
     <div class="navbar">
         <!-- Sol logo -->
         <a href="index.php">
@@ -74,6 +74,7 @@ if (!$result)
                         d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
                 </svg>
             </a>
+            <!-- Çıkış yapma (Logout) butonu -->
             <a class="btn btn-danger" href="logout.php">Logout</a>
         </div>
     </div>
@@ -120,10 +121,11 @@ if (!$result)
     </div>
    <!-- JavaScript: Status hücresine göre renklendirme -->
     <script>
+        // Tablodaki tüm satırları seç: data-status özelliği olan <tr>'leri al
         const rows = document.querySelectorAll('#historyTable tr[data-status]');
         rows.forEach(tr => {
-            const status = tr.dataset.status;
-            // .status class is on the last td
+            const status = tr.dataset.status; // data-status değerini al
+            // .status class'ına sahip hücreyi (td) bul
             const td = tr.querySelector('.status');
             if (td && status) {
                 td.className = 'status status-' + status; // e.g. status-approved
