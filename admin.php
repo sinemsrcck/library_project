@@ -395,9 +395,11 @@ if (isset($_POST['delete_id'])) {
         </div>
     </div>
     <script>
+        // Kitap arama inputunu ve sonuç kutusunu al
         const searchInput = document.getElementById("bookSearch");
         const resultsDiv = document.getElementById("bookResults");
 
+        // Kullanıcı input yazdığında çalışacak event
         searchInput.addEventListener("input", async () => {
             const q = searchInput.value.trim();
             if (q.length < 3) {
@@ -406,10 +408,11 @@ if (isset($_POST['delete_id'])) {
             }
 
             try {
+                // Google Books API'den kitap verisi çek
                 const res = await fetch(
                     `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(q)}&maxResults=6`
                 );
-                const data = await res.json();
+                const data = await res.json(); // JSON formatına çevir
 
                 resultsDiv.innerHTML = "";
                 resultsDiv.style.display = "block";
@@ -419,31 +422,37 @@ if (isset($_POST['delete_id'])) {
                     return;
                 }
 
+                // Her kitap için liste oluştur
                 data.items.forEach(book => {
                     const info = book.volumeInfo || {};
                     const title = info.title || "";
                     const author = (info.authors || []).join(", ");
                     const category = (info.categories || [""])[0];
+                    // ISBN değeri varsa al
                     const isbn =
                         info.industryIdentifiers?.find(i => i.type === "ISBN_13")?.identifier ||
                         info.industryIdentifiers?.find(i => i.type === "ISBN_10")?.identifier ||
                         "";
 
+                    // Liste elemanı oluştur
                     const div = document.createElement("div");
                     div.style.padding = "8px";
                     div.style.cursor = "pointer";
                     div.style.borderBottom = "1px solid #eee";
                     div.innerHTML = `<strong>${title}</strong><br><small>${author}</small>`;
 
+                    // Kullanıcı tıklarsa inputlara kitap bilgilerini yerleştir
                     div.onclick = () => {
                         document.getElementById("title").value = title;
                         document.getElementById("author").value = author;
                         document.getElementById("category").value = category;
                         document.getElementById("isbn").value = isbn;
 
+                        // Kapak görseli varsa cover_url inputuna ekle
                         const coverUrl = isbn ? `https://covers.openlibrary.org/b/isbn/${isbn}-L.jpg` : "";
                         document.getElementById("cover_url").value = coverUrl;
 
+                        // Yayın yılı varsa onu da al
                         const year = info.publishedDate ? parseInt(info.publishedDate.slice(0, 4)) : "";
                         document.getElementById("year").value = year;
 
@@ -451,6 +460,7 @@ if (isset($_POST['delete_id'])) {
                         searchInput.value = "";
                     };
 
+                    // Oluşturulan kutuyu sonuç listesine ekle
                     resultsDiv.appendChild(div);
                 });
 
@@ -461,19 +471,22 @@ if (isset($_POST['delete_id'])) {
         });
     </script>
     <script>
+        // Sayfa yüklendiğinde çalışacak
         document.addEventListener("DOMContentLoaded", function () {
             const toggleBtn = document.getElementById("toggleBooks");
-            if (!toggleBtn) return;
+            if (!toggleBtn) return; // Buton yoksa işlemi durdur
 
-            let expanded = false;
+            let expanded = false; // Başlangıçta gizli satırlar gösterilmez
             toggleBtn.addEventListener("click", function () {
                 const hiddenRows = document.querySelectorAll(".book-row.hidden");
 
                 if (!expanded) {
+                    // Eğer şu an gizliyse, hepsini göster
                     hiddenRows.forEach(row => row.style.display = "table-row");
                     toggleBtn.textContent = "Daha Az Göster";
                     expanded = true;
                 } else {
+                     // Eğer şu an gösteriliyorsa, tekrar gizle
                     hiddenRows.forEach(row => row.style.display = "none");
                     toggleBtn.textContent = "Daha Fazla Göster";
                     expanded = false;
